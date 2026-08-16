@@ -27,6 +27,7 @@
   "scripts": {
     "dev": "bun run --watch src/scripts/dev.ts",
     "start": "bun run src/scripts/dev.ts",
+    "build": "tsup",
     "test": "vitest",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
