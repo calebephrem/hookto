@@ -5,18 +5,19 @@ import { extractLinks } from "@/utils/extractLinks.js";
 import { unfurl } from "unfurl.js";
 
 export default defineHook({
-  events: ["pull_request.opened"],
+  events: ["issue_comment.created"],
   callback: async (ctx) => {
-    if (ctx.payload.pull_request.user?.type === "Bot") return;
+    if (ctx.payload.comment.user?.type === "Bot") return;
 
     const config = await getConfig(ctx);
 
-    if (!config.hooks.embed.enabled || !config.hooks.embed.prOpen.enabled)
+    if (
+      !config.hooks.unfurl.enabled ||
+      !config.hooks.unfurl.issueComment.enabled
+    )
       return;
 
-    const links = Array.from(
-      new Set(extractLinks(ctx.payload.pull_request.body || "")),
-    );
+    const links = Array.from(new Set(extractLinks(ctx.payload.comment.body)));
 
     if (links.length === 0) return;
 
@@ -35,8 +36,10 @@ export default defineHook({
     if (embeds.length === 0) return;
 
     const resolved = embeds.map((embed) => buildEmbed(embed));
-    const body = ctx.payload.pull_request.body + "\n\n" + resolved.join("\n");
+    const body = ctx.payload.comment.body + "\n\n" + resolved.join("\n");
 
-    await ctx.octokit.rest.pulls.update(ctx.pullRequest({ body }));
+    await ctx.octokit.rest.issues.updateComment(
+      ctx.issue({ comment_id: ctx.payload.comment.id, body }),
+    );
   },
 });

@@ -1,11 +1,11 @@
 import { deleteMergedBranchSchema } from "@/hooks/deleteMergedBranch/schema.js";
-import { embedSchema } from "@/hooks/embed/schema.js";
+import { unfurlSchema } from "@/hooks/unfurl/schema.js";
 import { z } from "zod";
 import { acknowledgeSchema } from "../hooks/acknowledge/schema.js";
 
 export const hooksSchema = z.object({
   acknowledge: acknowledgeSchema.default(acknowledgeSchema.parse({})),
-  embed: embedSchema.default(embedSchema.parse({})),
+  unfurl: unfurlSchema.default(unfurlSchema.parse({})),
   deleteMergedBranch: deleteMergedBranchSchema.default(
     deleteMergedBranchSchema.parse({}),
   ),

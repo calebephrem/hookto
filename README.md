@@ -62,7 +62,7 @@ Set these permissions and events:
 2. Add your environment variables in a `.env` file (see [`.env.example`](./.env.example) for the required fields)
 3. Run `bun run start` to start your Hookto instance
 
-> [!NOTE]
+> [!TIP]
 > On self-hosted servers, we recommend using [ngrok](https://ngrok.com) for your webhook URL. Smee.io is meant for local development only, not production use.
 >
 > 1. Go to [ngrok.com](https://ngrok.com) and sign in
@@ -73,7 +73,7 @@ Set these permissions and events:
 
 All configuration happens in a single file: `.github/hookto.yml`, placed inside each repository you want Hookto to manage. Every hook has its own section in this file, and you can enable, disable, or customize each one independently.
 
-### Example
+### Example Configuration
 
 ```yaml
 # .github/hookto.yml
@@ -87,6 +87,10 @@ hooks:
       enabled: true
       message: "Thanks for your contribution!"
     issueClose:
+      enabled: false
+  unfurl:
+    enabled: true
+    prOpen:
       enabled: false
 ```
 
