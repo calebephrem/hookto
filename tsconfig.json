@@ -17,9 +17,10 @@
     "moduleResolution": "node16",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
-    }
+      "@/*": ["src/*"],
+    },
   },
-  "include": ["src"]
+  "include": ["src"],
 }
