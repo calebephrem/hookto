@@ -1,0 +1,14 @@
+**/node_modules/
+**/.git
+**/README.md
+**/CONTRIBUTING.md
+**/CODE_OF_CONDUCT.md
+**/HOOKS.md
+**/LICENSE
+**/.vscode
+**/npm-debug.log
+**/coverage
+**/.env
+**/.editorconfig
+**/dist
+**/*.pem

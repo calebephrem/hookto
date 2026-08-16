@@ -1,0 +1,57 @@
+{
+  "name": "hookto",
+  "version": "0.1.0",
+  "description": "Self-hostable GitHub App with toggleable feature modules (hooks)",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "keywords": [
+    "probot",
+    "hookto",
+    "self-hosted",
+    "modular"
+  ],
+  "homepage": "https://github.com/hookto/hookto#readme",
+  "bugs": {
+    "url": "https://github.com/hookto/hookto/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hookto/hookto.git"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Hookto",
+    "url": "https://github.com/hookto"
+  },
+  "scripts": {
+    "dev": "bun run --watch src/scripts/dev.ts",
+    "start": "bun run src/scripts/dev.ts",
+    "test": "vitest",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@upstash/redis": "^1.38.2",
+    "ioredis": "^6.0.0",
+    "js-yaml": "^5.2.3",
+    "picocolors": "^1.1.1",
+    "probot": "^14.3.2",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^24.0.0",
+    "@typescript/native": "npm:typescript@^7.0.2",
+    "dotenv": "^17.4.2",
+    "eslint": "^10.8.1",
+    "smee-client": "^5.0.0",
+    "tsup": "^8.5.1",
+    "typescript": "^6.0.0",
+    "typescript-eslint": "^8.65.0",
+    "vitest": "^4.1.10"
+  },
+  "engines": {
+    "node": "^20.18.1 || >= 22"
+  }
+}
