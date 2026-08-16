@@ -20,7 +20,7 @@ const issueCloseSchema = z.object({
   message: z.string().min(1).default("Thanks for reporting!"),
 });
 
-export const schema = z.object({
+export const acknowledgeSchema = z.object({
   enabled: z.boolean().default(true),
   prOpen: prOpenSchema.default(prOpenSchema.parse({})),
   prClose: prCloseSchema.default(prCloseSchema.parse({})),
