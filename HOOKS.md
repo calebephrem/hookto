@@ -50,9 +50,6 @@ Scans PR bodies, issue bodies, and comments for links, and edits them in place t
 
 **Listens to:** `issue_comment.created`, `pull_request.opened`, `issues.opened`
 
-> [!NOTE]
-> This hook is disabled by default, since editing someone's PR/issue body or comment is a more invasive action than most hooks. You need to explicitly turn it on.
-
 ### Config
 
 | Setting                | Type      | Default |
@@ -61,3 +58,15 @@ Scans PR bodies, issue bodies, and comments for links, and edits them in place t
 | `issueComment.enabled` | `boolean` | `true`  |
 | `prOpen.enabled`       | `boolean` | `true`  |
 | `issueOpen.enabled`    | `boolean` | `true`  |
+
+## `deleteMergedBranch`
+
+Automatically deletes the head branch of a pull request once it has been successfully merged into the default branch.
+
+**Listens to:** `pull_request.closed`
+
+### Config
+
+| Setting   | Type      | Default |
+| --------- | --------- | ------- |
+| `enabled` | `boolean` | `false` |
