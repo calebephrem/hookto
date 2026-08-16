@@ -37,6 +37,7 @@
     "js-yaml": "^5.2.3",
     "picocolors": "^1.1.1",
     "probot": "^14.3.2",
+    "unfurl.js": "^6.4.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {

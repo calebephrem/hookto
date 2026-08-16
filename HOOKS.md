@@ -22,6 +22,7 @@ hooks:
 | Hook                          | Description                                                        |
 | ----------------------------- | ------------------------------------------------------------------ |
 | [`acknowledge`](#acknowledge) | Comments a friendly message when a PR or issue is opened or closed |
+| [`embed`](#embed)             | Unfurls links posted in comments into a rich preview card          |
 
 ## `acknowledge`
 
@@ -42,3 +43,21 @@ Comments on pull requests and issues when they're opened or closed.
 | `issueOpen.message`  | `string`  | `"Thanks for opening this issue!"`                                  |
 | `issueClose.enabled` | `boolean` | `true`                                                              |
 | `issueClose.message` | `string`  | `"Thanks for reporting!"`                                           |
+
+## `embed`
+
+Scans PR bodies, issue bodies, and comments for links, and edits them in place to add a rich preview card underneath, similar to how Slack or Discord unfurl links.
+
+**Listens to:** `issue_comment.created`, `pull_request.opened`, `issues.opened`
+
+> [!NOTE]
+> This hook is disabled by default, since editing someone's PR/issue body or comment is a more invasive action than most hooks. You need to explicitly turn it on.
+
+### Config
+
+| Setting                | Type      | Default |
+| ---------------------- | --------- | ------- |
+| `enabled`              | `boolean` | `false` |
+| `issueComment.enabled` | `boolean` | `true`  |
+| `prOpen.enabled`       | `boolean` | `true`  |
+| `issueOpen.enabled`    | `boolean` | `true`  |
