@@ -11,7 +11,7 @@ export default defineHook({
 
     const config = await getConfig(ctx);
 
-    if (!config.hooks.embed.enabled || !config.hooks.embed.issueOpen.enabled)
+    if (!config.hooks.unfurl.enabled || !config.hooks.unfurl.issueOpen.enabled)
       return;
 
     const links = Array.from(
