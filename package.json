@@ -52,8 +52,5 @@
     "typescript": "^6.0.0",
     "typescript-eslint": "^8.65.0",
     "vitest": "^4.1.10"
-  },
-  "engines": {
-    "node": "^20.18.1 || >= 22"
   }
 }
