@@ -19,6 +19,7 @@
         "@typescript/native": "npm:typescript@^7.0.2",
         "dotenv": "^17.4.2",
         "eslint": "^10.8.1",
+        "prettier": "^3.9.6",
         "smee-client": "^5.0.0",
         "tsup": "^8.5.1",
         "typescript": "^6.0.0",
@@ -559,6 +560,8 @@
     "postcss-load-config": ["postcss-load-config@6.0.1", "", { "dependencies": { "lilconfig": "^3.1.1" }, "peerDependencies": { "jiti": ">=1.21.0", "postcss": ">=8.0.9", "tsx": "^4.8.1", "yaml": "^2.4.2" }, "optionalPeers": ["jiti", "postcss", "tsx", "yaml"] }, "sha512-oPtTM4oerL+UXmx+93ytZVN82RrlY/wPUV8IeDxFrzIjXOLF1pN+EmKPLbubvKHT2HC20xXsCAH2Z+CKV6Oz/g=="],
 
     "prelude-ls": ["prelude-ls@1.2.1", "", {}, "sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g=="],
+
+    "prettier": ["prettier@3.9.6", "", { "bin": { "prettier": "bin/prettier.cjs" } }, "sha512-OpN0zzVdiaiAhxpuuj5efpIS4sY9j7bY6uR5mnj5yPzGkdkjNKSJeUThPb60Jw29QuAZgA4o+/iB49kFiaBX6g=="],
 
     "probot": ["probot@14.3.2", "", { "dependencies": { "@octokit/core": "^7.0.3", "@octokit/plugin-enterprise-compatibility": "^6.0.1", "@octokit/plugin-paginate-rest": "^14.0.0", "@octokit/plugin-rest-endpoint-methods": "^17.0.0", "@octokit/plugin-retry": "^8.0.1", "@octokit/plugin-throttling": "^11.0.1", "@octokit/request": "^10.0.3", "@octokit/types": "^16.0.0", "@octokit/webhooks": "^14.1.2", "@probot/get-private-key": "^2.1.1", "@probot/octokit-plugin-config": "^4.0.0", "@probot/pino": "^5.0.1", "bottleneck": "^2.19.5", "deepmerge": "^4.3.1", "import-meta-resolve": "^4.1.0", "npx-import-light": "^1.0.0", "octokit-auth-probot": "^4.0.1", "package-config": "^5.0.0", "pino": "^10.0.0", "pino-http": "^11.0.0", "toad-cache": "^3.7.0", "yaml": "^2.8.1" }, "bin": { "probot": "bin/probot.js" } }, "sha512-Bprr2KwlVF4Jpb6bnIcfadA4Dtns8nDJxSEEPNy3FhRrtHUYxZGiczReG5Vo6M7t4iS8Kcvek7CDUTTXgkaSBw=="],
 

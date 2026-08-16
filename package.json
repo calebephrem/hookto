@@ -29,7 +29,8 @@
     "start": "bun run src/scripts/dev.ts",
     "test": "vitest",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@upstash/redis": "^1.38.2",
@@ -46,6 +47,7 @@
     "@typescript/native": "npm:typescript@^7.0.2",
     "dotenv": "^17.4.2",
     "eslint": "^10.8.1",
+    "prettier": "^3.9.6",
     "smee-client": "^5.0.0",
     "tsup": "^8.5.1",
     "typescript": "^6.0.0",
