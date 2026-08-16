@@ -22,7 +22,18 @@ export default defineHook({
 
     const { owner, repo } = ctx.repo();
 
+    if (repo === ".github") {
+      await clearCache("all");
+
+      logger.info(
+        `Cleared entire config cache after ${owner}/.github's ${configPath} changed`,
+      );
+
+      return;
+    }
+
     await clearCache({ owner, repo });
+
     logger.info(
       `Cleared config cache for ${owner}/${repo} after ${configPath} change`,
     );

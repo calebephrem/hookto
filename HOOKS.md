@@ -8,7 +8,10 @@ A small, self-contained feature that reacts to something happening on GitHub (a 
 
 ## Where to configure hooks
 
-Add a `.github/hookto.yml` (not `.yaml`) file to your repo. It's optional, if you skip it, every hook just uses its defaults. You only need to write the settings you want to change.
+Add a `.github/hookto.yml` (not `.yaml`) file to your repo, or to a `.github` repo under your org/account for org-wide defaults.
+
+> [!NOTE]
+> Config is optional. If you skip it, every hook just uses its defaults. You only need to write the settings you want to change.
 
 ```yaml
 hooks:

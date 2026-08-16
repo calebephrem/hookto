@@ -15,6 +15,7 @@ Hookto is one app with many hooks. You install it once, then pick and choose whi
 
 - You fork and deploy Hookto (see "Getting started" below).
 - In each repo, you add a file at `.github/hookto.yml` (not `.yaml`) that says which hooks you want turned on, and how you want them to behave. Config is completely optional, you can skip it entirely if you're fine with the defaults.
+- If you manage many repos under one org or account, you can also set defaults once in a special `.github` repo instead of repeating yourself in every single repo. See "Org-wide and account-wide defaults" below.
 - Whenever something happens on GitHub (a PR opens, an issue closes, someone comments), Hookto checks your config and runs the hooks that should respond to that event.
 
 ## Getting started
@@ -33,6 +34,7 @@ Set these permissions and events:
   - Contents: read and write
   - Issues: read and write
   - Pull requests: read and write
+  - Metadata: read
 
 **Events**
 
@@ -71,7 +73,7 @@ Set these permissions and events:
 
 ## Configuration
 
-All configuration happens in a single file: `.github/hookto.yml`, placed inside each repository you want Hookto to manage. Every hook has its own section in this file, and you can enable, disable, or customize each one independently.
+All configuration happens in a file named `.github/hookto.yml`, placed inside a repository you want Hookto to manage. Every hook has its own section in this file, and you can enable, disable, or customize each one independently.
 
 ### Example Configuration
 
@@ -97,6 +99,31 @@ hooks:
 You only need to write the parts you want to change. Anything left out falls back to the default.
 
 For the full list of hooks and what they do, see [`HOOKS.md`](./HOOKS.md).
+
+### Org-wide and account-wide defaults
+
+If you manage a lot of repos under one org (or your personal account) and don't want to add `.github/hookto.yml` to every single one, you can set defaults once instead.
+
+Create a special repo named `.github` under your org or account, and add a `.github/hookto.yml` file inside it. Every repo under that org or account will inherit those settings automatically, no per-repo config required.
+
+```
+your-org/
+  .github/            <- special repo, config here applies org-wide
+    .github/
+      hookto.yml
+  some-repo/          <- inherits the org-wide config automatically
+  another-repo/       <- same here
+    .github/
+      hookto.yml      <- unless it sets its own overrides
+```
+
+Settings apply in this order, each one overriding the last:
+
+1. Hookto's built-in defaults
+2. Your org or account-wide `.github/hookto.yml`
+3. The individual repo's own `.github/hookto.yml`, if it has one
+
+So a repo only needs to specify what's actually different from your org-wide defaults, everything else is inherited automatically.
 
 ## Tech stack
 
