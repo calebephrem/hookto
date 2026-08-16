@@ -27,7 +27,6 @@
   "scripts": {
     "dev": "bun run --watch src/scripts/dev.ts",
     "start": "bun run src/scripts/dev.ts",
-    "build": "tsup",
     "test": "vitest",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
@@ -35,7 +34,6 @@
   },
   "dependencies": {
     "@upstash/redis": "^1.38.2",
-    "ioredis": "^6.0.0",
     "js-yaml": "^5.2.3",
     "picocolors": "^1.1.1",
     "probot": "^14.3.2",
