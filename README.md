@@ -34,6 +34,7 @@ Set these permissions and events:
   - Contents: read and write
   - Issues: read and write
   - Pull requests: read and write
+  - Checks: read and write
   - Metadata: read
 
 **Events**

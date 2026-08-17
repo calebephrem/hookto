@@ -22,10 +22,12 @@ hooks:
 
 ## Available hooks
 
-| Hook                          | Description                                                        |
-| ----------------------------- | ------------------------------------------------------------------ |
-| [`acknowledge`](#acknowledge) | Comments a friendly message when a PR or issue is opened or closed |
-| [`unfurl`](#unfurl)           | Unfurls links posted in comments into a rich preview card          |
+| Hook                                          | Description                                                                                         |
+| --------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| [`acknowledge`](#acknowledge)                 | Comments a friendly message when a PR or issue is opened or closed                                  |
+| [`unfurl`](#unfurl)                           | Unfurls links posted in comments into a rich preview card                                           |
+| [`deleteMergedBranch`](#deletemergedbranch)   | Automatically deletes the head branch of a pull request once merged                                 |
+| [`conventionalCommits`](#conventionalcommits) | Validates PR titles and commit messages against Conventional Commits specs and posts a status check |
 
 ## `acknowledge`
 
@@ -73,3 +75,18 @@ Automatically deletes the head branch of a pull request once it has been success
 | Setting   | Type      | Default |
 | --------- | --------- | ------- |
 | `enabled` | `boolean` | `false` |
+
+## `conventionalCommits`
+
+Validates PR titles and commit messages to ensure they follow the [Conventional Commits](https://www.conventionalcommits.org/) standard (`type(scope): description`) and creates a GitHub Check run to report findings.
+
+**Listens to:** `pull_request.opened`, `pull_request.reopened`, `pull_request.synchronize`
+
+### Config
+
+| Setting          | Type      | Default |
+| ---------------- | --------- | ------- |
+| `enabled`        | `boolean` | `false` |
+| `fail`           | `boolean` | `true`  |
+| `title`          | `boolean` | `true`  |
+| `commitMessages` | `boolean` | `true`  |

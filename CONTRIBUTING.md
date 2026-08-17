@@ -72,14 +72,16 @@ If everything is set up right, you'll see your hooks get registered in the termi
 
 ```
 src/
-  hooks/          <- one folder per hook (things that react to GitHub events)
-    acknowledge/
-      prOpen.ts   <- the hook's logic, split by event if needed
-      prClose.ts
-      issueOpen.ts
-      issueClose.ts
-      schema.ts   <- what settings this hook accepts, and their defaults
-  commands/       <- same idea as hooks, but triggered by a comment like "!command"
+  app/
+    hooks/          <- one folder per hook (things that react to GitHub events)
+      acknowledge/
+        prOpen.ts   <- the hook's logic, split by event if needed
+        prClose.ts
+        issueOpen.ts
+        issueClose.ts
+        schema.ts   <- what settings this hook accepts, and their defaults
+    commands/       <- same idea as hooks, but triggered by a comment like "!command"
+    system/         <- same as the two above, but includes automatic updates like clearing cache
   lib/            <- shared code used across the app (config loading, caching, etc.)
   constants/      <- constant values used across files
   schemas/        <- top-level config schema (composes every hook's schema together)
@@ -89,8 +91,6 @@ src/
 
 Hooks and commands work exactly the same way under the hood. The only difference is which folder they live in and how they're defined.
 
-Imports across the project use the `@/` alias, which points to `src/`. So from anywhere in the codebase you can write `import { getConfig } from "@/lib/getConfig.js"` instead of working out a relative path like `../../lib/getConfig.js`.
-
 ## Adding a new hook
 
 Let's say you want to build a hook that adds a "needs-triage" label to every new issue. Here's the process:
@@ -98,7 +98,7 @@ Let's say you want to build a hook that adds a "needs-triage" label to every new
 ### 1. Create a folder for your hook
 
 ```
-src/hooks/needs-triage/
+src/app/hooks/needs-triage/
   needs-triage.ts  <- naming this file "needs-triage.ts" isn't required. You can split
                        logic across multiple files if your hook listens to several
                        unrelated events.
@@ -110,7 +110,7 @@ src/hooks/needs-triage/
 This defines what settings your hook accepts, and what happens if someone doesn't set them.
 
 ```typescript
-// src/hooks/needs-triage/schema.ts
+// src/app/hooks/needs-triage/schema.ts
 import { z } from "zod";
 
 export const needsTriageSchema = z.object({
@@ -124,7 +124,7 @@ export type NeedsTriageConfig = z.infer<typeof needsTriageSchema>;
 ### 3. Write the hook itself
 
 ```typescript
-// src/hooks/needs-triage/needs-triage.ts
+// src/app/hooks/needs-triage/needs-triage.ts
 import { defineHook } from "@/lib/eventHandler.js";
 import { getConfig } from "@/lib/getConfig.js";
 
