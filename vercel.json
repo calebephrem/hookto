@@ -1,7 +1,7 @@
 {
   "outputDirectory": "dist",
   "functions": {
-    "api/github.ts": {
+    "api/github/webhooks.ts": {
       "includeFiles": "dist/app/**"
     }
   }
