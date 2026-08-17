@@ -1,6 +1,6 @@
-import { parseCommand } from "@/lib/commands.js";
-import { defineCommand } from "@/lib/eventHandler.js";
-import { getConfig } from "@/lib/getConfig.js";
+import { parseCommand } from "../../lib/commands.js";
+import { defineCommand } from "../../lib/eventHandler.js";
+import { getConfig } from "../../lib/getConfig.js";
 
 export default defineCommand(async (ctx) => {
   const config = await getConfig(ctx);

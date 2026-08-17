@@ -1,10 +1,11 @@
 import { defineConfig } from "tsup";
 
 export default defineConfig({
-  entry: ["src/index.ts", "src/hooks/**/*", "src/commands/**/*"],
+  entry: ["src/index.ts", "src/app/**/*"],
   format: ["esm"],
   outDir: "dist",
-  dts: true,
+  dts: false,
   minifyWhitespace: true,
   minifySyntax: true,
+  external: ["dotenv"],
 });

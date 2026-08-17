@@ -1,8 +1,8 @@
-import { defineHook } from "@/lib/eventHandler.js";
-import { getConfig } from "@/lib/getConfig.js";
-import { buildEmbed } from "@/utils/buildEmbed.js";
-import { extractLinks } from "@/utils/extractLinks.js";
 import { unfurl } from "unfurl.js";
+import { defineHook } from "../../../lib/eventHandler.js";
+import { getConfig } from "../../../lib/getConfig.js";
+import { buildEmbed } from "../../../utils/buildEmbed.js";
+import { extractLinks } from "../../../utils/extractLinks.js";
 
 export default defineHook({
   events: ["issue_comment.created"],

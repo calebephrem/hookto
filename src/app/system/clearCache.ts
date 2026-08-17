@@ -1,7 +1,7 @@
-import { configPath } from "@/constants/config.js";
-import { defineHook } from "@/lib/eventHandler.js";
-import { clearCache } from "@/lib/getConfig.js";
-import { logger } from "@/lib/logger.js";
+import { configPath } from "../../constants/config.js";
+import { defineHook } from "../../lib/eventHandler.js";
+import { clearCache } from "../../lib/getConfig.js";
+import { logger } from "../../lib/logger.js";
 
 export default defineHook({
   events: ["push"],
