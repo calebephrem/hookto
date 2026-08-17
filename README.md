@@ -53,10 +53,10 @@ Set these permissions and events:
 1. Go to [vercel.com](https://vercel.com) and sign in
 2. Create a new project
 3. Select GitHub as your provider, choose your Hookto fork, and import it
-4. Set your GitHub App's webhook URL to `your-subdomain.vercel.app/api/github`
+4. Set your GitHub App's webhook URL to `your-subdomain.vercel.app/api/github/webhooks`
 
 > [!NOTE]
-> If you're deploying to a serverless platform other than Vercel, make sure to add `/api/github` to the end of your deployment URL.
+> If you're deploying to a serverless platform other than Vercel, make sure to add `/api/github/webhooks` to the end of your deployment URL.
 
 #### Option 2: Self-hosted server
 
