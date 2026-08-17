@@ -32,12 +32,7 @@ async function collectHandlerFiles(dir: string): Promise<string[] | undefined> {
         continue;
       }
 
-      if (
-        (entry.name.endsWith(".js") ||
-          (entry.name.endsWith(".ts") && !entry.name.endsWith(".d.ts"))) &&
-        entry.name !== "schema.js" &&
-        entry.name !== "schema.ts"
-      ) {
+      if (entry.name.endsWith(".js") && entry.name !== "schema.js") {
         files.push(fullPath);
       }
     }
@@ -50,8 +45,11 @@ async function collectHandlerFiles(dir: string): Promise<string[] | undefined> {
 }
 
 export default async (app: Probot) => {
-  for (const dirName of ["hooks", "commands"]) {
-    const eventsDir = path.join(__dirname, dirName);
+  const rootDir = path.join(__dirname, "app");
+
+  for (const eventsDir of ["hooks", "commands", "system"].map((d) =>
+    path.join(rootDir, d),
+  )) {
     const handlerFiles = await collectHandlerFiles(eventsDir);
 
     if (!handlerFiles) continue;

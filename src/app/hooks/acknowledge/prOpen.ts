@@ -1,5 +1,5 @@
-import { defineHook } from "@/lib/eventHandler.js";
-import { getConfig } from "@/lib/getConfig.js";
+import { defineHook } from "../../../lib/eventHandler.js";
+import { getConfig } from "../../../lib/getConfig.js";
 
 export default defineHook({
   events: ["pull_request.opened"],

@@ -1,12 +1,12 @@
-import { cacheTTL, configPath, redisTimeout } from "@/constants/config.js";
-import { redis } from "@/index.js";
-import { configSchema, defaultConfig, type Config } from "@/schemas/config.js";
-import { hooksSchema } from "@/schemas/hooks.js";
-import { deepMerge } from "@/utils/deepMerge.js";
-import { withTimeout } from "@/utils/withTimeout.js";
 import { load } from "js-yaml";
 import type { Context } from "probot";
 import type { z } from "zod";
+import { cacheTTL, configPath, redisTimeout } from "../constants/config.js";
+import { redis } from "../index.js";
+import { configSchema, defaultConfig, type Config } from "../schemas/config.js";
+import { hooksSchema } from "../schemas/hooks.js";
+import { deepMerge } from "../utils/deepMerge.js";
+import { withTimeout } from "../utils/withTimeout.js";
 import { logger } from "./logger.js";
 
 const inMemCache = new Map<string, Config>();

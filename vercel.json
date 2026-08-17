@@ -1,8 +1,8 @@
 {
-  "bunVersion": "1.x",
+  "outputDirectory": "dist",
   "functions": {
     "api/github/webhooks.ts": {
-      "includeFiles": "src/{hooks,commands}/**"
+      "includeFiles": "dist/app/**"
     }
   }
 }

@@ -25,12 +25,13 @@
     "url": "https://github.com/hookto"
   },
   "scripts": {
-    "dev": "bun run --watch src/scripts/dev.ts",
-    "start": "bun run src/scripts/dev.ts",
-    "test": "vitest",
-    "lint": "eslint .",
+    "build": "tsup",
+    "start": "probot run ./dist/index.js",
+    "dev": "npm run build && probot run ./dist/index.js",
     "typecheck": "tsc --noEmit",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "lint": "eslint .",
+    "deploy": "vercel --prod"
   },
   "dependencies": {
     "@upstash/redis": "^1.38.2",
