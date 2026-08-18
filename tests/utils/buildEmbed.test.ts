@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildEmbed, UnfurlResult } from "../../src/utils/buildEmbed";
+import { buildEmbed, UnfurlResult } from "../../src/utils/buildEmbed.js";
 
 describe("buildEmbed", () => {
   it("should generate a complete HTML block quote with all metadata present", () => {

@@ -2,21 +2,5 @@
   "code_actions_on_format": {
     "source.fixAll": true,
     "source.organizeImports": true
-  },
-  "lsp": {
-    "vtsls": {
-      "settings": {
-        "javascript": {
-          "suggest": {
-            "completeJSDocs": true
-          }
-        },
-        "typescript": {
-          "suggest": {
-            "completeJSDocs": true
-          }
-        }
-      }
-    }
   }
 }

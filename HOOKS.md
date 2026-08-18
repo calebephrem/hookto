@@ -103,3 +103,18 @@ Validates pull request titles and creates a GitHub Check run named `WIP`. If the
 | Setting   | Type      | Default |
 | --------- | --------- | ------- |
 | `enabled` | `boolean` | `true`  |
+
+## `assign`
+
+Automatically assigns reviewers and assignees to pull requests based on file path pattern matching rules. Supports individual user handles (`@user`) and GitHub team slugs (`team-slug`).
+
+**Listens to:** `pull_request.opened`, `pull_request.reopened`, `pull_request.synchronize`
+
+### Config
+
+| Setting             | Type       | Default |
+| ------------------- | ---------- | ------- |
+| `enabled`           | `boolean`  | `false` |
+| `rules[].paths`     | `string[]` | `["*"]` |
+| `rules[].reviewers` | `string[]` | `[]`    |
+| `rules[].assignees` | `string[]` | `[]`    |

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { extractLinks } from "../../src/utils/extractLinks";
+import { extractLinks } from "../../src/utils/extractLinks.js";
 
 describe("extractLinks", () => {
   it("should return [] for invalid links", () => {

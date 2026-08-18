@@ -7,7 +7,7 @@
     "module": "node18",
     "declaration": true,
     "sourceMap": true,
-    "rootDir": "./src",
+    "rootDir": "./",
     "outDir": "./dist/",
     "strict": true,
     "noUnusedLocals": true,
@@ -18,5 +18,5 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src"]
+  "include": ["src", "tests"]
 }
