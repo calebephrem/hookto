@@ -99,8 +99,7 @@ async function getOwnerRawConfig(
   return raw;
 }
 
-export async function getConfig(ctx?: Context): Promise<Config> {
-  if (!ctx) return defaultConfig;
+export async function getConfig(ctx: Context): Promise<Config> {
   const { owner, repo } = ctx.repo();
   const key = cacheKey(owner, repo);
   const cached = inMemCache.get(key);

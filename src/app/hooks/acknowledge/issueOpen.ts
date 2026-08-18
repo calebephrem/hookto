@@ -4,7 +4,7 @@ import { getConfig } from "../../../lib/getConfig.js";
 export default defineHook({
   events: ["issues.opened"],
   callback: async (ctx) => {
-    const config = await getConfig();
+    const config = await getConfig(ctx);
 
     if (!config.hooks.acknowledge.enabled) return;
 

@@ -42,7 +42,7 @@ Every hook and command file has the same shape, defined via `defineHook`:
 export default defineHook({
   events: ["pull_request.opened"], // GitHub webhook event.action names
   callback: async (ctx) => {
-    const config = await getConfig(ctx); // ALWAYS pass ctx, see gotcha below
+    const config = await getConfig(ctx);
     if (!config.hooks.myHook.enabled) return;
     // ... actual logic
   },
@@ -50,10 +50,6 @@ export default defineHook({
 ```
 
 **Hooks and commands are registered identically.** The only difference between the two is which folder they live in, `commands` are just hooks that happen to listen for `issue_comment.created` and parse a `!command` prefix out of the body. There is no separate command-dispatch system.
-
-### Critical gotcha: always pass `ctx` to `getConfig`
-
-`getConfig(ctx?: Context)` returns hardcoded schema defaults immediately if `ctx` is omitted, silently ignoring the user's actual config. This bug has recurred multiple times across different hooks during development (`parseCommand`, `deleteMergedBranch`) because it fails silently, no error, no crash, just wrong behavior. **Every call to `getConfig` must pass `ctx`.** If you're reviewing or writing hook code, this is the first thing to check.
 
 ## Config resolution
 
