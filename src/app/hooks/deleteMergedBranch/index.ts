@@ -5,8 +5,9 @@ export default defineHook({
   events: ["pull_request.closed"],
   callback: async (ctx) => {
     const config = await getConfig(ctx);
+    const { enabled, exclude } = config.hooks.deleteMergedBranch;
 
-    if (!config.hooks.deleteMergedBranch.enabled) return;
+    if (!enabled) return;
 
     const pr = ctx.payload.pull_request;
 
@@ -17,7 +18,12 @@ export default defineHook({
     const branchName = pr.head.ref;
     const defaultBranch = baseRepo.default_branch;
 
-    if (branchName === defaultBranch || headRepo.id !== baseRepo.id) return;
+    if (
+      branchName === defaultBranch ||
+      headRepo.id !== baseRepo.id ||
+      exclude.includes(branchName)
+    )
+      return;
 
     try {
       await ctx.octokit.rest.git.deleteRef({
