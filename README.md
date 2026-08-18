@@ -9,6 +9,12 @@ Hookto is a self-hostable, all-in-one GitHub app built to automate the boring st
 
 The whole app is made of small, toggleable, and customizable pieces called hooks. Each hook has one job (like commenting "thanks for opening this PR!" or labeling an issue based on its title), and you can turn any hook on or off without touching any code. Think of it like a big toolbox where you only pull out the tools you actually need.
 
+Here's what that looks like on a pull request, straight from a live deployment:
+
+<img src="./assets/acknowledge-pr-open.png" alt="The acknowledge hook commenting on a freshly opened pull request" width="700">
+
+<img src="./assets/conventional-commits.png" alt="The conventionalCommits hook reporting that every commit message is valid" width="700">
+
 Hookto is one app with many hooks. You install it once, then pick and choose which features you want, all from a single config file (or none at all, if you're happy with the defaults).
 
 ### In simple terms

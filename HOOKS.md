@@ -34,6 +34,12 @@ hooks:
 
 Comments on pull requests and issues when they're opened or closed.
 
+<img src="./assets/acknowledge-pr-open.png" alt="Comment posted when a pull request is opened" width="700">
+
+<img src="./assets/acknowledge-issue-open.png" alt="Comment posted when an issue is opened" width="700">
+
+<img src="./assets/acknowledge-pr-close.png" alt="Comment posted when a pull request is closed" width="700">
+
 **Listens to:** `pull_request.opened`, `pull_request.closed`, `issues.opened`, `issues.closed`
 
 ### Config
@@ -81,6 +87,8 @@ Automatically deletes the head branch of a pull request once it has been success
 ## `conventionalCommits`
 
 Validates PR titles and commit messages to ensure they follow the [Conventional Commits](https://www.conventionalcommits.org/) standard (`type(scope): description`) and creates a GitHub Check run to report findings.
+
+<img src="./assets/conventional-commits.png" alt="Comment posted when every commit message follows the Conventional Commits standard" width="700">
 
 **Listens to:** `pull_request.opened`, `pull_request.reopened`, `pull_request.synchronize`
 
