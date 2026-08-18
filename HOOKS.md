@@ -30,6 +30,7 @@ hooks:
 | [`conventionalCommits`](#conventionalcommits) | Validates PR titles and commit messages against Conventional Commits specs and posts a status check |
 | [`wip`](#wip)                                 | Blocks pull requests from being merged if they contain "WIP" in their title                         |
 | [`dco`](#dco)                                 | Enforces the Developer Certificate of Origin (`Signed-off-by`) on every commit of a pull request    |
+| [`label`](#label)                             | Auto-labels issues and pull requests from title keywords and changed file paths                     |
 
 ## `acknowledge`
 
@@ -118,6 +119,39 @@ Enforces the [Developer Certificate of Origin](https://developercertificate.org/
 | --------- | --------- | ------- | ------------------------------------------------------ |
 | `enabled` | `boolean` | `false` | Enables the DCO validation                             |
 | `fail`    | `boolean` | `true`  | Creates a failing check run when a sign-off is missing |
+
+## `label`
+
+Automatically labels issues and pull requests. Two kinds of rules, both configurable:
+
+- **Keyword rules** — match words in the title (case-insensitive, whole-word), applied to both issues and pull requests
+- **Path rules** — match changed file paths against glob patterns, applied to pull requests only
+
+When enabled with no config, a small set of sensible defaults is used (`bug`, `enhancement`, `documentation` from title keywords; `documentation`, `tests`, `dependencies` from file paths). Defining your own `keywords` or `paths` replaces the defaults entirely. Labels that don't exist in the repo yet are created by GitHub automatically.
+
+**Listens to:** `issues.opened`, `pull_request.opened`, `pull_request.reopened`, `pull_request.synchronize`
+
+### Config
+
+| Setting               | Type       | Default            | Description                                      |
+| --------------------- | ---------- | ------------------ | ------------------------------------------------ |
+| `enabled`             | `boolean`  | `false`            | Enables automatic labeling                       |
+| `keywords[].label`    | `string`   | see defaults above | Label to apply when a keyword matches the title  |
+| `keywords[].keywords` | `string[]` | see defaults above | Words to look for in the issue/PR title          |
+| `paths[].label`       | `string`   | see defaults above | Label to apply when a changed file matches       |
+| `paths[].paths`       | `string[]` | see defaults above | Glob patterns matched against changed file paths |
+
+```yaml
+hooks:
+  label:
+    enabled: true
+    keywords:
+      - label: bug
+        keywords: [fix, bug, crash]
+    paths:
+      - label: frontend
+        paths: ["src/ui/**", "**/*.css"]
+```
 
 ## `assign`
 
