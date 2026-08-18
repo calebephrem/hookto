@@ -57,10 +57,11 @@ export default defineHook({
     }
 
     const hasFailed = summary.length > 0;
+    const commentMark = "<!-- hookto-conventional-commits -->";
 
     const summaryMD = hasFailed
       ? [
-          "<!-- hookto-conventional-commits -->",
+          commentMark,
           "> [!WARNING]",
           "> Some commit messages in this PR do not follow the [**Conventional Commits**](https://conventionalcommits.org/) specification.",
           ">",
@@ -80,6 +81,7 @@ export default defineHook({
           conventionalCommitTypes.map((type) => `\`${type}\``).join(", "),
         ].join("\n")
       : [
+          commentMark,
           "> [!NOTE]",
           "> All commit messages follow Conventional Commits standard.",
         ].join("\n");
@@ -88,8 +90,7 @@ export default defineHook({
       await ctx.octokit.rest.issues.listComments(ctx.issue())
     ).data.find(
       (comment) =>
-        comment.user?.type === "Bot" &&
-        comment.body?.includes("<!-- hookto-conventional-commits -->"),
+        comment.user?.type === "Bot" && comment.body?.includes(commentMark),
     );
 
     if (botComment) {
