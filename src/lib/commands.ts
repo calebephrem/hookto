@@ -8,7 +8,7 @@ interface ParsedCommand {
 }
 
 export async function parseCommand(
-  ctx?: Context<"issue_comment.created">,
+  ctx: Context<"issue_comment.created">,
 ): Promise<ParsedCommand | undefined> {
   const config = await getConfig(ctx);
   const { prefix, flagPrefix } = config.settings.commands;

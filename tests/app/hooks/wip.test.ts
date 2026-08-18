@@ -1,9 +1,9 @@
-import { describe, it, expect, vi } from "vitest";
 import type { Context } from "probot";
-import { wipSchema } from "../src/app/hooks/wip/schema.js";
-import wipHook from "../src/app/hooks/wip/index.js";
-import * as configModule from "../src/lib/getConfig.js";
-import { defaultConfig, type Config } from "../src/schemas/config.js";
+import { describe, expect, it, vi } from "vitest";
+import wipHook from "../../../src/app/hooks/wip/index.js";
+import { wipSchema } from "../../../src/app/hooks/wip/schema.js";
+import * as configModule from "../../../src/lib/getConfig.js";
+import { defaultConfig, type Config } from "../../../src/schemas/config.js";
 
 type PrContext = Context<"pull_request.opened">;
 

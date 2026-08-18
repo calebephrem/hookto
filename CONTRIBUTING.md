@@ -87,6 +87,7 @@ src/
   schemas/        <- top-level config schema (composes every hook's schema together)
   types/          <- shared TypeScript types
   utils/          <- utility functions
+tests/            <- test files
 ```
 
 Hooks and commands work exactly the same way under the hood. The only difference is which folder they live in and how they're defined.
@@ -103,6 +104,8 @@ src/app/hooks/needs-triage/
                        logic across multiple files if your hook listens to several
                        unrelated events.
   schema.ts        <- required, this is your hook's config schema
+src/tests/app/hooks/
+  needs-triage.test.ts <- test file for the new hook
 ```
 
 ### 2. Write its config schema

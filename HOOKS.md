@@ -103,4 +103,3 @@ Validates pull request titles and creates a GitHub Check run named `WIP`. If the
 | Setting   | Type      | Default |
 | --------- | --------- | ------- |
 | `enabled` | `boolean` | `true`  |
-
