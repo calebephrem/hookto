@@ -73,9 +73,10 @@ Automatically deletes the head branch of a pull request once it has been success
 
 ### Config
 
-| Setting   | Type      | Default |
-| --------- | --------- | ------- |
-| `enabled` | `boolean` | `false` |
+| Setting   | Type       | Default | Description                                            |
+| --------- | ---------- | ------- | ------------------------------------------------------ |
+| `enabled` | `boolean`  | `false` | Enables automatic deletion after a pull request merges |
+| `exclude` | `string[]` | `[]`    | Exact branch names that should never be deleted        |
 
 ## `conventionalCommits`
 

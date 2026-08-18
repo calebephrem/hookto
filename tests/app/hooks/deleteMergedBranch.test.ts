@@ -1,6 +1,7 @@
 import type { Context } from "probot";
 import { describe, expect, it, vi } from "vitest";
 import deleteMergedBranchHook from "../../../src/app/hooks/deleteMergedBranch/index.js";
+import { deleteMergedBranchSchema } from "../../../src/app/hooks/deleteMergedBranch/schema.js";
 import * as configModule from "../../../src/lib/getConfig.js";
 import { defaultConfig, type Config } from "../../../src/schemas/config.js";
 
@@ -56,15 +57,33 @@ function createMockContext(overrides: {
   return { mockCtx, deleteRefMock };
 }
 
-function withEnabled(enabled: boolean): Config {
+function withEnabled(enabled: boolean, exclude: string[] = []): Config {
   return {
     ...defaultConfig,
     hooks: {
       ...defaultConfig.hooks,
-      deleteMergedBranch: { enabled },
+      deleteMergedBranch: { enabled, exclude },
     },
   };
 }
+
+describe("deleteMergedBranch schema", () => {
+  it("defaults the exclusion list to empty", () => {
+    expect(deleteMergedBranchSchema.parse({})).toEqual({
+      enabled: false,
+      exclude: [],
+    });
+  });
+
+  it("accepts exact branch names to exclude", () => {
+    expect(
+      deleteMergedBranchSchema.parse({ exclude: ["release", "develop"] }),
+    ).toEqual({
+      enabled: false,
+      exclude: ["release", "develop"],
+    });
+  });
+});
 
 describe("deleteMergedBranch hook", () => {
   it("registers pull_request.closed", () => {
@@ -96,6 +115,20 @@ describe("deleteMergedBranch hook", () => {
       defaultBranch: "main",
     });
     vi.spyOn(configModule, "getConfig").mockResolvedValue(withEnabled(true));
+
+    await deleteMergedBranchHook.callback(mockCtx);
+
+    expect(deleteRefMock).not.toHaveBeenCalled();
+  });
+
+  it("does nothing when the branch is explicitly excluded", async () => {
+    const { mockCtx, deleteRefMock } = createMockContext({
+      merged: true,
+      headRef: "release",
+    });
+    vi.spyOn(configModule, "getConfig").mockResolvedValue(
+      withEnabled(true, ["release", "develop"]),
+    );
 
     await deleteMergedBranchHook.callback(mockCtx);
 
