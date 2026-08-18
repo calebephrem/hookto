@@ -1,0 +1,12 @@
+hooks:
+  acknowledge:
+    prClose:
+      enabled: false
+  unfurl:
+    enabled: true
+  conventionalCommits:
+    enabled: true
+  deleteMergedBranch:
+    enabled: true
+    exclude:
+      - "dev"
