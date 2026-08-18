@@ -83,6 +83,15 @@ describe("deleteMergedBranch schema", () => {
       exclude: ["release", "develop"],
     });
   });
+
+  it("accepts glob pattern branch names to exclude", () => {
+    expect(
+      deleteMergedBranchSchema.parse({ exclude: ["dev/*", "release/*"] }),
+    ).toEqual({
+      enabled: false,
+      exclude: ["dev/*", "release/*"],
+    });
+  });
 });
 
 describe("deleteMergedBranch hook", () => {
@@ -135,6 +144,20 @@ describe("deleteMergedBranch hook", () => {
     expect(deleteRefMock).not.toHaveBeenCalled();
   });
 
+  it("does nothing when the branch matches a glob in exclude", async () => {
+    const { mockCtx, deleteRefMock } = createMockContext({
+      merged: true,
+      headRef: "dev/feature-1",
+    });
+    vi.spyOn(configModule, "getConfig").mockResolvedValue(
+      withEnabled(true, ["dev/*", "release/*"]),
+    );
+
+    await deleteMergedBranchHook.callback(mockCtx);
+
+    expect(deleteRefMock).not.toHaveBeenCalled();
+  });
+
   it("does nothing when the PR came from a fork", async () => {
     const { mockCtx, deleteRefMock } = createMockContext({
       merged: true,
@@ -161,6 +184,24 @@ describe("deleteMergedBranch hook", () => {
       owner: "testowner",
       repo: "testrepo",
       ref: "heads/feature-x",
+    });
+  });
+
+  it("deletes the branch when it does not match any glob in exclude", async () => {
+    const { mockCtx, deleteRefMock } = createMockContext({
+      merged: true,
+      headRef: "feature/login",
+    });
+    vi.spyOn(configModule, "getConfig").mockResolvedValue(
+      withEnabled(true, ["dev/*", "release/*"]),
+    );
+
+    await deleteMergedBranchHook.callback(mockCtx);
+
+    expect(deleteRefMock).toHaveBeenCalledWith({
+      owner: "testowner",
+      repo: "testrepo",
+      ref: "heads/feature/login",
     });
   });
 
