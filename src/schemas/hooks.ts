@@ -3,6 +3,7 @@ import { acknowledgeSchema } from "../app/hooks/acknowledge/schema.js";
 import { conventionalCommitsSchema } from "../app/hooks/conventionalCommits/schema.js";
 import { deleteMergedBranchSchema } from "../app/hooks/deleteMergedBranch/schema.js";
 import { unfurlSchema } from "../app/hooks/unfurl/schema.js";
+import { wipSchema } from "../app/hooks/wip/schema.js";
 
 export const hooksSchema = z.object({
   acknowledge: acknowledgeSchema.default(acknowledgeSchema.parse({})),
@@ -13,4 +14,5 @@ export const hooksSchema = z.object({
   conventionalCommits: conventionalCommitsSchema.default(
     conventionalCommitsSchema.parse({}),
   ),
+  wip: wipSchema.default(wipSchema.parse({})),
 });

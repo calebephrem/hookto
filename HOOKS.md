@@ -28,6 +28,7 @@ hooks:
 | [`unfurl`](#unfurl)                           | Unfurls links posted in comments into a rich preview card                                           |
 | [`deleteMergedBranch`](#deletemergedbranch)   | Automatically deletes the head branch of a pull request once merged                                 |
 | [`conventionalCommits`](#conventionalcommits) | Validates PR titles and commit messages against Conventional Commits specs and posts a status check |
+| [`wip`](#wip)                                 | Blocks pull requests from being merged if they contain "WIP" in their title                         |
 
 ## `acknowledge`
 
@@ -90,3 +91,16 @@ Validates PR titles and commit messages to ensure they follow the [Conventional 
 | `fail`           | `boolean` | `true`  |
 | `title`          | `boolean` | `true`  |
 | `commitMessages` | `boolean` | `true`  |
+
+## `wip`
+
+Validates pull request titles and creates a GitHub Check run named `WIP`. If the title contains "WIP" (case-insensitive), the check completes with conclusion `failure` to block merging when configured as a required status check in branch protection. Once "WIP" is removed from the title, the check completes with conclusion `success`.
+
+**Listens to:** `pull_request.opened`, `pull_request.reopened`, `pull_request.edited`, `pull_request.synchronize`
+
+### Config
+
+| Setting   | Type      | Default |
+| --------- | --------- | ------- |
+| `enabled` | `boolean` | `true`  |
+

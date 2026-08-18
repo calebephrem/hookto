@@ -26,6 +26,7 @@
   },
   "scripts": {
     "build": "tsup",
+    "test": "vitest run",
     "start": "probot run ./dist/index.js",
     "dev": "npm run build && probot run ./dist/index.js",
     "typecheck": "tsc --noEmit",
@@ -43,7 +44,9 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@types/ioredis": "^5.0.0",
     "@types/node": "^24.0.0",
+    "@types/node-fetch": "^2.6.13",
     "@typescript/native": "npm:typescript@^7.0.2",
     "dotenv": "^17.4.2",
     "eslint": "^10.8.1",
