@@ -27,6 +27,7 @@ List any issues that are linked to this pull request (e.g., `Closes #123`).
 - [ ] `bun run lint` or `npm run lint` completes without warnings or errors
 - [ ] `bun run typecheck` or `npm run typecheck` completes without warnings or errors
 - [ ] `bun run lint` or `npm run lint` completes without warnings or errors
+- [ ] `bun run test` or `npm run test` completes without failed tests
 - [ ] My code is formatted with prettier (`bun run format` or `npm run format`)
 - [ ] My commit messages follow [Conventional Commits](https://www.conventionalcommits.org/) (e.g. `feat: ...`, `fix: ...`, `chore: ...`)
 - [ ] I've updated relevant documentation (README, comments, etc.) if needed
