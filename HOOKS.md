@@ -32,6 +32,7 @@ hooks:
 | [`dco`](#dco)                                 | Enforces the Developer Certificate of Origin (`Signed-off-by`) on every commit of a pull request    |
 | [`label`](#label)                             | Automatically applies labels to pull requests and issues based on keywords or file paths            |
 | [`assign`](#assign)                           | Automatically assigns reviewers and assignees to pull requests based on file path pattern matching  |
+| [`pasteCI`](#pasteci)                         | Pastes the failing CI job output as a comment on the pull request                                   |
 
 ## `acknowledge`
 
@@ -120,6 +121,22 @@ Enforces the [Developer Certificate of Origin](https://developercertificate.org/
 | --------- | --------- | ------- | ------------------------------------------------------ |
 | `enabled` | `boolean` | `false` | Enables the DCO validation                             |
 | `fail`    | `boolean` | `true`  | Creates a failing check run when a sign-off is missing |
+
+## `pasteCI`
+
+When a GitHub Actions workflow run attached to a pull request fails, pastes the tail of each failing job's log into a comment on the PR, so you don't have to click through to the Actions tab. The comment is kept up to date on every run (single comment, never one per push), and when CI passes again the same comment is refreshed to say so.
+
+> [!NOTE]
+> GitHub only attaches `pull_requests` to workflow runs from branches of the same repository, so runs triggered by forked PRs are skipped. Reading job logs requires the `actions: read` app permission.
+
+**Listens to:** `workflow_run.completed`
+
+### Config
+
+| Setting   | Type      | Default | Description                                  |
+| --------- | --------- | ------- | -------------------------------------------- |
+| `enabled` | `boolean` | `false` | Enables pasting CI output on failure         |
+| `lines`   | `number`  | `50`    | How many trailing log lines to paste per job |
 
 ## `assign`
 
