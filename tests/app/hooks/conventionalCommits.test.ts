@@ -139,7 +139,7 @@ describe("conventionalCommits hook", () => {
     expect(createCommentMock).toHaveBeenCalledWith(
       expect.objectContaining({
         body: expect.stringContaining(
-          "All commits and the PR title adhere to the",
+          "All commits and the PR title adhere to the [Conventional Commits](https://www.conventionalcommits.org/) specification. Good to go!",
         ),
       }),
     );
@@ -236,7 +236,7 @@ describe("conventionalCommits hook", () => {
     expect(createCommentMock).toHaveBeenCalledWith(
       expect.objectContaining({
         body: expect.stringContaining(
-          "All commits and the PR title adhere to the",
+          "All commits and the PR title adhere to the [Conventional Commits](https://www.conventionalcommits.org/) specification. Good to go!",
         ),
       }),
     );
