@@ -29,6 +29,7 @@ hooks:
 | [`deleteMergedBranch`](#deletemergedbranch)   | Automatically deletes the head branch of a pull request once merged                                 |
 | [`conventionalCommits`](#conventionalcommits) | Validates PR titles and commit messages against Conventional Commits specs and posts a status check |
 | [`wip`](#wip)                                 | Blocks pull requests from being merged if they contain "WIP" in their title                         |
+| [`dco`](#dco)                                 | Enforces the Developer Certificate of Origin (`Signed-off-by`) on every commit of a pull request    |
 
 ## `acknowledge`
 
@@ -104,6 +105,19 @@ Validates pull request titles and creates a GitHub Check run named `WIP`. If the
 | Setting   | Type      | Default |
 | --------- | --------- | ------- |
 | `enabled` | `boolean` | `true`  |
+
+## `dco`
+
+Enforces the [Developer Certificate of Origin](https://developercertificate.org/) on pull requests. Scans every commit message for a `Signed-off-by: Name <email>` trailer, comments on the PR listing the commits that are missing one (updating the same comment on later pushes), and creates a `Developer Certificate of Origin` check run that fails when `fail` is enabled. Merge commits are skipped, since GitHub creates them without a sign-off.
+
+**Listens to:** `pull_request.opened`, `pull_request.reopened`, `pull_request.synchronize`
+
+### Config
+
+| Setting   | Type      | Default | Description                                            |
+| --------- | --------- | ------- | ------------------------------------------------------ |
+| `enabled` | `boolean` | `false` | Enables the DCO validation                             |
+| `fail`    | `boolean` | `true`  | Creates a failing check run when a sign-off is missing |
 
 ## `assign`
 
