@@ -1,6 +1,6 @@
 import { unfurl } from "unfurl.js";
 
-type UnfurlResult = Awaited<ReturnType<typeof unfurl>>;
+export type UnfurlResult = Awaited<ReturnType<typeof unfurl>>;
 
 export function buildEmbed(embed: UnfurlResult): string {
   const url = embed.open_graph?.url || "";

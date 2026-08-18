@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseConventionalCommits } from "../../src/utils/conventionalCommits";
+import { parseConventionalCommits } from "../../src/utils/conventionalCommits.js";
 
 describe("conventionalCommits", () => {
   it("returns false for invalid conventional commit messages", () => {

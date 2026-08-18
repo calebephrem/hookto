@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { deepMerge } from "../../src/utils/deepMerge";
+import { deepMerge } from "../../src/utils/deepMerge.js";
 
 describe("deepMerge", () => {
   it("should shallow merge flat objects", () => {
