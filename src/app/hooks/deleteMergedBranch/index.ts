@@ -1,3 +1,4 @@
+import { minimatch } from "minimatch";
 import { defineHook } from "../../../lib/eventHandler.js";
 import { getConfig } from "../../../lib/getConfig.js";
 
@@ -18,10 +19,14 @@ export default defineHook({
     const branchName = pr.head.ref;
     const defaultBranch = baseRepo.default_branch;
 
+    const isExcluded = exclude.some((pattern) =>
+      minimatch(branchName, pattern),
+    );
+
     if (
       branchName === defaultBranch ||
       headRepo.id !== baseRepo.id ||
-      exclude.includes(branchName)
+      isExcluded
     )
       return;
 
