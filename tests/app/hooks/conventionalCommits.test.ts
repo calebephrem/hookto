@@ -138,7 +138,9 @@ describe("conventionalCommits hook", () => {
     );
     expect(createCommentMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        body: expect.stringContaining("All commit messages follow"),
+        body: expect.stringContaining(
+          "All commits and the PR title adhere to the [Conventional Commits](https://www.conventionalcommits.org/) specification. Good to go!",
+        ),
       }),
     );
   });
@@ -203,6 +205,20 @@ describe("conventionalCommits hook", () => {
     expect(createCommentMock).not.toHaveBeenCalled();
   });
 
+  it("includes the comment mark in the success comment so it can be updated later", async () => {
+    vi.mocked(parseConventionalCommits).mockReturnValue(validCommit);
+    const { mockCtx, createCommentMock } = createMockContext("feat: thing", []);
+    vi.spyOn(configModule, "getConfig").mockResolvedValue(withConfig({}));
+
+    await conventionalCommitsHook.callback(mockCtx);
+
+    expect(createCommentMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        body: expect.stringContaining("<!-- hookto-conventional-commits -->"),
+      }),
+    );
+  });
+
   it("only checks the title when commitMessages is disabled", async () => {
     vi.mocked(parseConventionalCommits).mockImplementation((msg: string) =>
       msg !== "bad commit" ? validCommit : false,
@@ -219,7 +235,9 @@ describe("conventionalCommits hook", () => {
 
     expect(createCommentMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        body: expect.stringContaining("All commit messages follow"),
+        body: expect.stringContaining(
+          "All commits and the PR title adhere to the [Conventional Commits](https://www.conventionalcommits.org/) specification. Good to go!",
+        ),
       }),
     );
   });
