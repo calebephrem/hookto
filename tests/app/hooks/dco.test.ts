@@ -9,15 +9,15 @@ function createMockContext(
 ) {
   const createCheckMock = vi.fn().mockResolvedValue({ data: { id: 42 } });
   const updateCheckMock = vi.fn().mockResolvedValue({});
-  const listCommitsMock = vi.fn().mockResolvedValue({
-    data: commits.map((c) => ({
+  const paginateMock = vi.fn().mockResolvedValue(
+    commits.map((c) => ({
       commit: { message: c.message },
       sha: c.sha,
       parents: Array.from({ length: c.parents ?? 1 }, (_, i) => ({
         sha: `parent${i}`,
       })),
     })),
-  });
+  );
   const listCommentsMock = vi.fn().mockResolvedValue({ data: [] });
   const createCommentMock = vi.fn().mockResolvedValue({ data: { id: 1 } });
   const updateCommentMock = vi.fn().mockResolvedValue({});
@@ -27,6 +27,7 @@ function createMockContext(
       pull_request: {
         number: 1,
         head: { sha: "headsha123" },
+        base: { ref: "main" },
       },
     },
     repo: () => ({ owner: "testowner", repo: "testrepo" }),
@@ -37,9 +38,10 @@ function createMockContext(
       ...extra,
     }),
     octokit: {
+      paginate: paginateMock,
       rest: {
         checks: { create: createCheckMock, update: updateCheckMock },
-        pulls: { listCommits: listCommitsMock },
+        pulls: { listCommits: vi.fn() },
         issues: {
           listComments: listCommentsMock,
           createComment: createCommentMock,
@@ -140,6 +142,11 @@ describe("dco hook", () => {
     expect(createCommentMock).toHaveBeenCalledWith(
       expect.objectContaining({
         body: expect.stringContaining("feat: unsigned commit"),
+      }),
+    );
+    expect(createCommentMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        body: expect.stringContaining("git rebase --signoff origin/main"),
       }),
     );
   });

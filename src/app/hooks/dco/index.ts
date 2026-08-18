@@ -28,13 +28,15 @@ export default defineHook({
       });
     }
 
-    const commits = (
-      await ctx.octokit.rest.pulls.listCommits({
+    const commits = await ctx.octokit.paginate(
+      ctx.octokit.rest.pulls.listCommits,
+      {
         owner,
         repo,
         pull_number: ctx.payload.pull_request.number,
-      })
-    ).data;
+        per_page: 100,
+      },
+    );
 
     const unsigned = commits
       // Merge commits (created by GitHub itself) never carry a sign-off
@@ -66,9 +68,7 @@ export default defineHook({
           "",
 
           "> [!TIP]",
-          "> Sign off new commits with `git commit -s`, or fix the existing ones with `git rebase --signoff HEAD~" +
-            unsigned.length +
-            "` and force-push.",
+          `> Sign off new commits with \`git commit -s\`, or fix existing ones with \`git rebase --signoff origin/${ctx.payload.pull_request.base.ref}\` and force-push.`,
         ].join("\n")
       : [
           commentMark,
