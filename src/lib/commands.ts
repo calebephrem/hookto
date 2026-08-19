@@ -1,7 +1,7 @@
 import { Context } from "probot";
 import { getConfig } from "./getConfig.js";
 
-interface ParsedCommand {
+export interface ParsedCommand {
   command: string;
   args: string[];
   flags: Record<string, string | boolean>;

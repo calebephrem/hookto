@@ -16,7 +16,8 @@
     "noFallthroughCasesInSwitch": true,
     "moduleResolution": "node16",
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
   },
-  "include": ["src", "tests"]
+  "include": ["src", "tests"],
 }
