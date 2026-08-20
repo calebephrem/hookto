@@ -44,7 +44,7 @@ Set these permissions and events:
 - Pull request
 - Push
 
-> [!NOTE]
+> [!IMPORTANT]
 > Permission and event settings might need to be updated as new hooks are added in future updates.
 
 ### 3. Deploy
@@ -71,6 +71,10 @@ Set these permissions and events:
 > 1. Go to [ngrok.com](https://ngrok.com) and sign in
 > 2. Follow their setup guide to expose your local server
 > 3. Use the ngrok URL as your GitHub App's webhook URL
+
+### 4. Show your support ;)
+
+If Hookto makes your workflow easier, drop a ⭐ on the repository and follow for future updates!
 
 ## Configuration
 

@@ -1,5 +1,6 @@
 import { defineHook } from "../../../lib/eventHandler.js";
 import { getConfig } from "../../../lib/getConfig.js";
+import { buildGFM } from "../../../utils/buildGFM.js";
 
 const signedOffByPattern = /^Signed-off-by:\s+.+\s+<\S+@\S+>\s*$/im;
 
@@ -39,7 +40,6 @@ export default defineHook({
     );
 
     const unsigned = commits
-      // Merge commits (created by GitHub itself) never carry a sign-off
       .filter((commit) => commit.parents.length <= 1)
       .filter((commit) => !signedOffByPattern.test(commit.commit.message))
       .map(
@@ -50,31 +50,33 @@ export default defineHook({
     const hasFailed = unsigned.length > 0;
     const commentMark = "<!-- hookto-dco -->";
 
-    const summaryMD = hasFailed
-      ? [
-          commentMark,
-          "> [!IMPORTANT]",
-          "> Some commits in this PR are missing a `Signed-off-by` line, required by the [**Developer Certificate of Origin**](https://developercertificate.org/).",
-          ">",
-          "> Expected trailer: `Signed-off-by: Your Name <your@email.com>`",
-          "",
-
-          "<details>",
-          "<summary><strong>Commits missing a sign-off</strong></summary>",
-          "",
-          unsigned.map((s) => `- ${s}`).join("\n"),
-          "",
-          "</details>",
-          "",
-
-          "> [!TIP]",
-          `> Sign off new commits with \`git commit -s\`, or fix existing ones with \`git rebase --signoff origin/${ctx.payload.pull_request.base.ref}\` and force-push.`,
-        ].join("\n")
-      : [
-          commentMark,
-          "> [!NOTE]",
-          "> All commits are signed off in accordance with the [Developer Certificate of Origin](https://developercertificate.org/). Good to go!",
-        ].join("\n");
+    const summaryMD =
+      commentMark +
+      "\n" +
+      (hasFailed
+        ? buildGFM([
+            {
+              type: "important",
+              text: "Some commits in this PR are missing a `Signed-off-by` line, required by the [**Developer Certificate of Origin**](https://developercertificate.org/).\n\nExpected trailer: `Signed-off-by: Your Name <your@email.com>`",
+            },
+            {
+              type: "details",
+              content: {
+                summary: "Commits missing a sign-off</strong>",
+                items: unsigned,
+              },
+            },
+            {
+              type: "tip",
+              text: `Sign off new commits with \`git commit -s\`, or fix existing ones with \`git rebase --signoff origin/${ctx.payload.pull_request.base.ref}\` and force-push (\`git push --force-with-lease\`).`,
+            },
+          ])
+        : buildGFM([
+            {
+              type: "note",
+              text: "All commits are signed off in accordance with the [Developer Certificate of Origin](https://developercertificate.org/). Good to go!",
+            },
+          ]));
 
     const botComment = (
       await ctx.octokit.rest.issues.listComments(ctx.issue())

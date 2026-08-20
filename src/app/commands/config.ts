@@ -4,6 +4,7 @@ import { createBranch } from "../../lib/branch.js";
 import { createCommitMessage } from "../../lib/commits.js";
 import { defineCommand } from "../../lib/eventHandler.js";
 import recommendedConfig from "../../templates/recommended.json" with { type: "json" };
+import { buildGFM } from "../../utils/buildGFM.js";
 
 export default defineCommand(async (ctx, cmd) => {
   if (cmd.command !== "config") return;
@@ -49,42 +50,44 @@ export default defineCommand(async (ctx, cmd) => {
       repo,
     });
 
-    const prBody = [
-      "> [!NOTE]",
-      `> Adds the recommended \`${configPath}\` configuration file. Review and merge to enable your hooks!`,
-    ].join("\n");
-
     const { data: pr } = await ctx.octokit.rest.pulls.create({
       owner,
       repo,
       title: commitMessage,
       head: branch,
       base: repoData.default_branch,
-      body: prBody,
+      body: buildGFM([
+        {
+          type: "note",
+          text: `> Adds the recommended \`${configPath}\` configuration file. Review and merge to enable your hooks!`,
+        },
+      ]),
     });
-
-    const issueBody = [
-      "> [!TIP]",
-      `> Created configuration file and made a PR (#${pr.number})`,
-    ].join("\n");
 
     await ctx.octokit.rest.issues.createComment({
       owner,
       repo,
       issue_number: ctx.payload.issue.number,
-      body: issueBody,
+      body: buildGFM([
+        {
+          type: "tip",
+          text: `> Created configuration file and made a PR (#${pr.number})`,
+        },
+      ]),
     });
-  } catch (error) {
+  } catch {
     await ctx.octokit.rest.issues.createComment({
       owner,
       repo,
       issue_number: ctx.payload.issue.number,
-      body: [
-        "> [!WARNING]",
-        "> Failed to create configuration PR:",
-        "",
-        `> ${error instanceof Error ? error.message : error}`,
-      ].join("\n"),
+      body: buildGFM([
+        {
+          type: "warning",
+          text: [
+            "Failed to create configuration PR. Check if the bot has `Content: Read and write` permission.",
+          ].join("\n"),
+        },
+      ]),
     });
   }
 });

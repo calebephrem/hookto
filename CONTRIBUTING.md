@@ -2,6 +2,9 @@
 
 Thanks for wanting to help out! This guide walks you through setting up the project locally, and either adding a new hook or updating an existing one, even if you've never contributed to an open source project before.
 
+> [!TIP]
+> Beyond opening PRs, giving the repo a ⭐ and following along is one of the best ways to contribute and keep this project growing!
+
 ## Before you start
 
 You'll need:
