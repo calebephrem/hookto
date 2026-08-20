@@ -49,6 +49,13 @@ export const defineCommand = (
 
       if (!cmd) return;
 
+      const allowedAssociations = new Set(["COLLABORATOR", "MEMBER", "OWNER"]);
+      const authorAssociation = ctx.payload.comment.author_association;
+
+      if (!allowedAssociations.has(authorAssociation)) {
+        return;
+      }
+
       await func({ ctx, cmd, config });
     },
   });
