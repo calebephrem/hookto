@@ -30,12 +30,12 @@ export default defineHook({
 
     const title = ctx.payload.pull_request.title;
     const commits = (
-      await ctx.octokit.rest.pulls.listCommits({
+      await ctx.octokit.paginate(ctx.octokit.rest.pulls.listCommits, {
         owner,
         repo,
         pull_number: ctx.payload.pull_request.number,
       })
-    ).data.map((c) => ({ message: c.commit.message, sha: c.sha }));
+    ).map((c) => ({ message: c.commit.message, sha: c.sha }));
 
     const summary: string[] = [];
 
