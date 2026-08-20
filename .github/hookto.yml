@@ -234,51 +234,51 @@ hooks:
             body: true
         paths:
           - paths:
-              - '**/*.md'
-              - '**/*.mdx'
+              - "**/*.md"
+              - "**/*.mdx"
               - docs/**
-              - '**/docs/**'
-              - '**/documentation/**'
+              - "**/docs/**"
+              - "**/documentation/**"
             labels:
               - docs
           - paths:
-              - '**/*.test.[jt]s*'
-              - '**/*.spec.[jt]s*'
-              - '**/tests/**'
-              - '**/__tests__/**'
-              - '**/cypress/**'
-              - '**/playwright/**'
+              - "**/*.test.[jt]s*"
+              - "**/*.spec.[jt]s*"
+              - "**/tests/**"
+              - "**/__tests__/**"
+              - "**/cypress/**"
+              - "**/playwright/**"
             labels:
               - testing
           - paths:
               - .github/workflows/**
               - .circleci/**
-              - '**/Dockerfile*'
-              - '**/docker-compose*.yml'
+              - "**/Dockerfile*"
+              - "**/docker-compose*.yml"
             labels:
               - ci/cd
           - paths:
-              - '**/package.json'
-              - '**/pnpm-lock.yaml'
-              - '**/yarn.lock'
-              - '**/package-lock.json'
-              - '**/requirements*.txt'
-              - '**/Pipfile*'
-              - '**/pyproject.toml'
-              - '**/Cargo.toml'
-              - '**/Cargo.lock'
-              - '**/go.mod'
-              - '**/go.sum'
-              - '**/Gemfile*'
+              - "**/package.json"
+              - "**/pnpm-lock.yaml"
+              - "**/yarn.lock"
+              - "**/package-lock.json"
+              - "**/requirements*.txt"
+              - "**/Pipfile*"
+              - "**/pyproject.toml"
+              - "**/Cargo.toml"
+              - "**/Cargo.lock"
+              - "**/go.mod"
+              - "**/go.sum"
+              - "**/Gemfile*"
             labels:
               - dependencies
           - paths:
-              - '**/*.css'
-              - '**/*.scss'
-              - '**/*.sass'
-              - '**/*.less'
-              - '**/*.styled.[jt]s*'
-              - '**/styles/**'
-              - '**/theme/**'
+              - "**/*.css"
+              - "**/*.scss"
+              - "**/*.sass"
+              - "**/*.less"
+              - "**/*.styled.[jt]s*"
+              - "**/styles/**"
+              - "**/theme/**"
             labels:
               - style

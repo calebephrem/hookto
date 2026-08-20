@@ -6,8 +6,6 @@ export default defineHook({
   callback: async ({ ctx, config }) => {
     const { enabled, issueOpen } = config.hooks.label;
 
-    console.log("[label/issueOpen] Event received", enabled, issueOpen);
-
     if (!enabled || !issueOpen.enabled || !issueOpen.rules.length) return;
 
     const issue = ctx.payload.issue;

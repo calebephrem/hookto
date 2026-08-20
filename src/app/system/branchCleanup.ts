@@ -3,7 +3,7 @@ import { defineHook } from "../../lib/eventHandler.js";
 
 export default defineHook({
   events: ["pull_request.closed"],
-  callback: async (ctx) => {
+  callback: async ({ ctx }) => {
     const { pull_request } = ctx.payload;
     const headBranchName = pull_request.head.ref;
     const isFork = pull_request.head.repo?.id !== pull_request.base.repo?.id;

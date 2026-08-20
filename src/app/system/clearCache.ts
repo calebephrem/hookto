@@ -5,7 +5,7 @@ import { logger } from "../../lib/logger.js";
 
 export default defineHook({
   events: ["push"],
-  async callback(ctx) {
+  async callback({ ctx }) {
     const { ref, repository, commits } = ctx.payload;
     const defaultBranchRef = `refs/heads/${repository.default_branch}`;
 
