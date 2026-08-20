@@ -1,10 +1,284 @@
 hooks:
   acknowledge:
+    enabled: true
     prOpen:
+      enabled: true
       message: >-
         Thanks for opening this PR! A maintainer will take a look at your
         changes shortly.
   conventionalCommits:
     enabled: true
+    title: true
+    commitMessages: true
+    fail: true
+  deleteMergedBranch:
+    enabled: true
+    exclude:
+      - main
+      - master
+      - dev
+      - develop
+      - staging
+      - qa
+      - release/*
+      - hotfix/*
   unfurl:
     enabled: true
+    issueComment:
+      enabled: true
+    prOpen:
+      enabled: true
+    issueOpen:
+      enabled: true
+    discussionComment:
+      enabled: true
+    discussionOpen:
+      enabled: true
+  wip:
+    enabled: true
+  label:
+    enabled: true
+    issueOpen:
+      enabled: true
+      rules:
+        - keywords:
+            - bug
+            - broken
+            - crash
+            - error
+            - exception
+            - fail
+            - doesn't work
+            - does not work
+            - not working
+            - unexpected
+            - regression
+            - glitch
+            - freeze
+            - unresponsive
+            - stuck
+            - stack trace
+            - problem
+          labels:
+            - bug
+        - keywords:
+            - feat
+            - enhance
+            - improve
+            - proposal
+            - suggestion
+            - idea
+            - would like
+            - please add
+            - add support
+            - functionality
+          labels:
+            - enhancement
+        - keywords:
+            - question
+            - how do i
+            - how to
+            - how can i
+            - clarification
+            - can i use
+            - does it support
+            - what is the difference
+            - is it possible to
+            - not sure how
+            - could someone explain
+            - any way to
+            - usage example
+          labels:
+            - question
+            - help wanted
+        - keywords:
+            - doc
+            - readme
+            - wiki
+            - tutorial
+            - guide
+            - typo
+            - spelling
+            - grammar
+            - broken link
+            - markdown
+          labels:
+            - docs
+        - keywords:
+            - ui
+            - ux
+            - layout
+            - design
+            - style
+            - theme
+            - responsive
+            - visual
+          labels:
+            - style
+    prOpen:
+      enabled: true
+      rules:
+        keywords:
+          - keywords:
+              - feat
+              - enhance
+              - improve
+              - add support
+              - new feat
+              - functionality
+              - added
+              - implement
+              - introducing
+            labels:
+              - enhancement
+            title: true
+            body: true
+          - keywords:
+              - fix
+              - bug
+              - patch
+              - resolve
+              - close
+              - crash
+              - error
+              - exception
+              - hotfix
+              - regression
+              - correct
+            labels:
+              - bug
+            title: true
+            body: true
+          - keywords:
+              - refactor
+              - clean
+              - restructure
+              - rewrite
+              - optim
+              - perf
+              - simplify
+              - modularize
+            labels:
+              - refactor
+            title: true
+            body: true
+          - keywords:
+              - doc
+              - readme
+              - typo
+              - jsdoc
+              - typedoc
+              - guide
+              - tutorial
+              - wiki
+              - spelling
+            labels:
+              - docs
+            title: true
+            body: true
+          - keywords:
+              - test
+              - e2e
+              - coverage
+              - jest
+              - vitest
+              - cypress
+              - playwright
+              - spec
+            labels:
+              - testing
+            title: true
+            body: true
+          - keywords:
+              - bump
+              - dep
+              - upgrad
+              - updat
+              - package.json
+              - pnpm-lock
+              - yarn.lock
+              - bun.lock
+              - package-lock
+            labels:
+              - dependencies
+            title: true
+            body: true
+          - keywords:
+              - ui
+              - ux
+              - style
+              - css
+              - tailwind
+              - theme
+              - layout
+              - design
+              - responsive
+            labels:
+              - style
+            title: true
+            body: true
+          - keywords:
+              - ci
+              - cd
+              - action
+              - workflow
+              - pipeline
+              - build
+              - vercel
+              - netlify
+              - docker
+              - deploy
+            labels:
+              - ci/cd
+            title: true
+            body: true
+        paths:
+          - paths:
+              - '**/*.md'
+              - '**/*.mdx'
+              - docs/**
+              - '**/docs/**'
+              - '**/documentation/**'
+            labels:
+              - docs
+          - paths:
+              - '**/*.test.[jt]s*'
+              - '**/*.spec.[jt]s*'
+              - '**/tests/**'
+              - '**/__tests__/**'
+              - '**/cypress/**'
+              - '**/playwright/**'
+            labels:
+              - testing
+          - paths:
+              - .github/workflows/**
+              - .circleci/**
+              - '**/Dockerfile*'
+              - '**/docker-compose*.yml'
+            labels:
+              - ci/cd
+          - paths:
+              - '**/package.json'
+              - '**/pnpm-lock.yaml'
+              - '**/yarn.lock'
+              - '**/package-lock.json'
+              - '**/requirements*.txt'
+              - '**/Pipfile*'
+              - '**/pyproject.toml'
+              - '**/Cargo.toml'
+              - '**/Cargo.lock'
+              - '**/go.mod'
+              - '**/go.sum'
+              - '**/Gemfile*'
+            labels:
+              - dependencies
+          - paths:
+              - '**/*.css'
+              - '**/*.scss'
+              - '**/*.sass'
+              - '**/*.less'
+              - '**/*.styled.[jt]s*'
+              - '**/styles/**'
+              - '**/theme/**'
+            labels:
+              - style
