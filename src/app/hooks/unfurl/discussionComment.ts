@@ -4,16 +4,18 @@ import { buildEmbed } from "../../../utils/buildEmbed.js";
 import { extractLinks } from "../../../utils/extractLinks.js";
 
 export default defineHook({
-  events: ["issue_comment.created"],
+  events: ["discussion_comment.created"],
   callback: async ({ ctx, config }) => {
     if (
       !config.hooks.unfurl.enabled ||
-      !config.hooks.unfurl.issueComment.enabled ||
+      !config.hooks.unfurl.discussionComment?.enabled ||
       ctx.payload.comment.user?.type === "Bot"
     )
       return;
 
-    const links = Array.from(new Set(extractLinks(ctx.payload.comment.body)));
+    const links = Array.from(
+      new Set(extractLinks(ctx.payload.comment.body || "")),
+    );
 
     if (links.length === 0) return;
 
@@ -34,8 +36,20 @@ export default defineHook({
     const resolved = embeds.map((embed) => buildEmbed(embed));
     const body = ctx.payload.comment.body + "\n\n" + resolved.join("\n");
 
-    await ctx.octokit.rest.issues.updateComment(
-      ctx.issue({ comment_id: ctx.payload.comment.id, body }),
+    await ctx.octokit.graphql(
+      `
+      mutation updateDiscussionComment($nodeId: ID!, $body: String!) {
+        updateDiscussionComment(input: { commentId: $nodeId, body: $body }) {
+          comment {
+            id
+          }
+        }
+      }
+      `,
+      {
+        nodeId: ctx.payload.comment.node_id,
+        body,
+      },
     );
   },
 });

@@ -4,16 +4,18 @@ import { buildEmbed } from "../../../utils/buildEmbed.js";
 import { extractLinks } from "../../../utils/extractLinks.js";
 
 export default defineHook({
-  events: ["issue_comment.created"],
+  events: ["discussion.created"],
   callback: async ({ ctx, config }) => {
     if (
       !config.hooks.unfurl.enabled ||
-      !config.hooks.unfurl.issueComment.enabled ||
-      ctx.payload.comment.user?.type === "Bot"
+      !config.hooks.unfurl.discussionOpen?.enabled ||
+      ctx.payload.discussion.user?.type === "Bot"
     )
       return;
 
-    const links = Array.from(new Set(extractLinks(ctx.payload.comment.body)));
+    const links = Array.from(
+      new Set(extractLinks(ctx.payload.discussion.body || "")),
+    );
 
     if (links.length === 0) return;
 
@@ -32,10 +34,22 @@ export default defineHook({
     if (embeds.length === 0) return;
 
     const resolved = embeds.map((embed) => buildEmbed(embed));
-    const body = ctx.payload.comment.body + "\n\n" + resolved.join("\n");
+    const body = ctx.payload.discussion.body + "\n\n" + resolved.join("\n");
 
-    await ctx.octokit.rest.issues.updateComment(
-      ctx.issue({ comment_id: ctx.payload.comment.id, body }),
+    await ctx.octokit.graphql(
+      `
+      mutation updateDiscussion($nodeId: ID!, $body: String!) {
+        updateDiscussion(input: { discussionId: $nodeId, body: $body }) {
+          discussion {
+            id
+          }
+        }
+      }
+      `,
+      {
+        nodeId: ctx.payload.discussion.node_id,
+        body,
+      },
     );
   },
 });

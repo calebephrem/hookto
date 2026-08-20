@@ -1,6 +1,5 @@
 import { minimatch } from "minimatch";
 import { defineHook } from "../../../lib/eventHandler.js";
-import { getConfig } from "../../../lib/getConfig.js";
 
 export default defineHook({
   events: [
@@ -8,9 +7,7 @@ export default defineHook({
     "pull_request.synchronize",
     "pull_request.reopened",
   ],
-  callback: async (ctx) => {
-    const config = await getConfig(ctx);
-
+  callback: async ({ ctx, config }) => {
     const { enabled, rules } = config.hooks.assign;
 
     if (!enabled || !rules.length) return;
@@ -30,9 +27,7 @@ export default defineHook({
 
     for (const rule of rules) {
       const isMatch = files.some((file) =>
-        rule.paths.some((pattern) =>
-          pattern === "*" ? true : minimatch(file, pattern),
-        ),
+        rule.paths.some((pattern) => minimatch(file, pattern)),
       );
 
       if (isMatch) {

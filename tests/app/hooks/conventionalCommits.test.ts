@@ -38,7 +38,13 @@ function createMockContext(
       pull_request: {
         title,
         number: 1,
-        head: { sha: "headsha123" },
+        head: {
+          sha: "headsha123",
+          ref: "feature-branch",
+        },
+        base: {
+          ref: "main",
+        },
       },
     },
     repo: () => ({ owner: "testowner", repo: "testrepo" }),

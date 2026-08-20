@@ -31,11 +31,12 @@ Set these permissions and events:
 **Permissions**
 
 - Repository permissions:
-  - Contents: read and write
-  - Issues: read and write
-  - Pull requests: read and write
-  - Checks: read and write
-  - Metadata: read
+  - Contents: Read and write
+  - Issues: Read and write
+  - Pull requests: Read and write
+  - Checks: Read and write
+  - Discussions: Read and write
+  - Metadata: Read
 
 **Events**
 
@@ -43,8 +44,10 @@ Set these permissions and events:
 - Issues
 - Pull request
 - Push
+- Discussion
+- Discussion comment
 
-> [!NOTE]
+> [!IMPORTANT]
 > Permission and event settings might need to be updated as new hooks are added in future updates.
 
 ### 3. Deploy
@@ -71,6 +74,10 @@ Set these permissions and events:
 > 1. Go to [ngrok.com](https://ngrok.com) and sign in
 > 2. Follow their setup guide to expose your local server
 > 3. Use the ngrok URL as your GitHub App's webhook URL
+
+### 4. Show your support ;)
+
+If Hookto makes your workflow easier, drop a ⭐ on the repository and follow for future updates!
 
 ## Configuration
 

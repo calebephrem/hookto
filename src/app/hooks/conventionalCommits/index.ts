@@ -1,5 +1,5 @@
 import { defineHook } from "../../../lib/eventHandler.js";
-import { getConfig } from "../../../lib/getConfig.js";
+import { buildGFM } from "../../../utils/buildGFM.js";
 import {
   conventionalCommitTypes,
   parseConventionalCommits,
@@ -11,9 +11,7 @@ export default defineHook({
     "pull_request.reopened",
     "pull_request.synchronize",
   ],
-  callback: async (ctx) => {
-    const config = await getConfig(ctx);
-
+  callback: async ({ ctx, config }) => {
     if (!config.hooks.conventionalCommits.enabled) return;
 
     const { fail } = config.hooks.conventionalCommits;
@@ -32,12 +30,12 @@ export default defineHook({
 
     const title = ctx.payload.pull_request.title;
     const commits = (
-      await ctx.octokit.rest.pulls.listCommits({
+      await ctx.octokit.paginate(ctx.octokit.rest.pulls.listCommits, {
         owner,
         repo,
         pull_number: ctx.payload.pull_request.number,
       })
-    ).data.map((c) => ({ message: c.commit.message, sha: c.sha }));
+    ).map((c) => ({ message: c.commit.message, sha: c.sha }));
 
     const summary: string[] = [];
 
@@ -51,7 +49,7 @@ export default defineHook({
         const followsCC = parseConventionalCommits(commit.message);
         if (followsCC === false)
           summary.push(
-            `Commit [${commit.sha.slice(0, 7)}](https://github.com/${owner}/${repo}/commit/${commit.sha}): \`${commit.message}\``,
+            `Commit [${commit.sha.slice(0, 7)}](https://github.com/${owner}/${repo}/commit/${commit.sha}): \`${commit.message.split("\n")[0]}\``,
           );
       });
     }
@@ -59,32 +57,39 @@ export default defineHook({
     const hasFailed = summary.length > 0;
     const commentMark = "<!-- hookto-conventional-commits -->";
 
-    const summaryMD = hasFailed
-      ? [
-          commentMark,
-          "> [!WARNING]",
-          "> Some commit messages in this PR do not follow the [**Conventional Commits**](https://conventionalcommits.org/) specification.",
-          ">",
-          "> Expected format: `type(scope): description`",
-          "",
-
-          "<details>",
-          "<summary><strong>Invalid commit messages</strong></summary>",
-          "",
-          summary.map((s) => `- ${s}`).join("\n"),
-          "",
-          "</details>",
-          "",
-
-          "> [!TIP]",
-          "> **Valid types:**",
-          conventionalCommitTypes.map((type) => `\`${type}\``).join(", "),
-        ].join("\n")
-      : [
-          commentMark,
-          "> [!NOTE]",
-          "> All commits and the PR title adhere to the [Conventional Commits](https://www.conventionalcommits.org/) specification. Good to go!",
-        ].join("\n");
+    const summaryMD =
+      commentMark +
+      "\n" +
+      (hasFailed
+        ? buildGFM([
+            {
+              type: "warning",
+              text: "Some commit messages in this PR do not follow the [**Conventional Commits**](https://conventionalcommits.org/) specification.\n\nExpected format: `type(scope): description`",
+            },
+            {
+              type: "details",
+              content: {
+                summary: "Invalid commit messages",
+                items: summary,
+              },
+            },
+            {
+              type: "tip",
+              text: [
+                "**Valid types:** " +
+                  conventionalCommitTypes
+                    .map((type) => `\`${type}\``)
+                    .join(", "),
+                `Fix non-compliant commit messages with \`git rebase -i origin/${ctx.payload.pull_request.base.ref}\` (change \`pick\` to \`reword\`) and force-push (\`git push --force-with-lease\`).`,
+              ].join("\n\n"),
+            },
+          ])
+        : buildGFM([
+            {
+              type: "note",
+              text: "All commits and the PR title adhere to the [Conventional Commits](https://www.conventionalcommits.org/) specification. Good to go!",
+            },
+          ]));
 
     const botComment = (
       await ctx.octokit.rest.issues.listComments(ctx.issue())

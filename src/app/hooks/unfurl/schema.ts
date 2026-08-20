@@ -9,4 +9,6 @@ export const unfurlSchema = z.object({
   issueComment: subEventSchema.default(subEventSchema.parse({})),
   prOpen: subEventSchema.default(subEventSchema.parse({})),
   issueOpen: subEventSchema.default(subEventSchema.parse({})),
+  discussionComment: subEventSchema.default(subEventSchema.parse({})),
+  discussionOpen: subEventSchema.default(subEventSchema.parse({})),
 });

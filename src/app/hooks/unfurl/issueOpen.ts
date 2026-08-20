@@ -1,17 +1,16 @@
 import { unfurl } from "unfurl.js";
 import { defineHook } from "../../../lib/eventHandler.js";
-import { getConfig } from "../../../lib/getConfig.js";
 import { buildEmbed } from "../../../utils/buildEmbed.js";
 import { extractLinks } from "../../../utils/extractLinks.js";
 
 export default defineHook({
   events: ["issues.opened"],
-  callback: async (ctx) => {
-    if (ctx.payload.issue.user?.type === "Bot") return;
-
-    const config = await getConfig(ctx);
-
-    if (!config.hooks.unfurl.enabled || !config.hooks.unfurl.issueOpen.enabled)
+  callback: async ({ ctx, config }) => {
+    if (
+      !config.hooks.unfurl.enabled ||
+      !config.hooks.unfurl.issueOpen.enabled ||
+      ctx.payload.issue.user?.type === "Bot"
+    )
       return;
 
     const links = Array.from(

@@ -1,5 +1,4 @@
 import { defineHook } from "../../../lib/eventHandler.js";
-import { getConfig } from "../../../lib/getConfig.js";
 
 export default defineHook({
   events: [
@@ -8,9 +7,7 @@ export default defineHook({
     "pull_request.edited",
     "pull_request.synchronize",
   ],
-  callback: async (ctx) => {
-    const config = await getConfig(ctx);
-
+  callback: async ({ ctx, config }) => {
     if (!config.hooks.wip.enabled) return;
 
     const title = ctx.payload.pull_request.title;

@@ -41,8 +41,7 @@ Every hook and command file has the same shape, defined via `defineHook`:
 ```typescript
 export default defineHook({
   events: ["pull_request.opened"], // GitHub webhook event.action names
-  callback: async (ctx) => {
-    const config = await getConfig(ctx);
+  callback: async ({ ctx, config }) => {
     if (!config.hooks.myHook.enabled) return;
     // ... actual logic
   },

@@ -158,7 +158,7 @@ describe("assign hook", () => {
       withConfig({
         rules: [
           {
-            paths: ["*"],
+            paths: ["**/*"],
             assignees: ["@calebephrem", "@other-user"],
             reviewers: ["@calebephrem", "dev-team"],
           },
