@@ -21,7 +21,7 @@ You'll need:
 ### 1. Clone the repo
 
 ```bash
-git clone https://github.com/hookto/hookto.git
+git clone https://github.com/calebephrem/hookto.git
 cd hookto
 bun install
 ```

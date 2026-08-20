@@ -11,13 +11,13 @@
     "self-hosted",
     "modular"
   ],
-  "homepage": "https://github.com/hookto/hookto#readme",
+  "homepage": "https://github.com/calebephrem/hookto#readme",
   "bugs": {
-    "url": "https://github.com/hookto/hookto/issues"
+    "url": "https://github.com/calebephrem/hookto/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hookto/hookto.git"
+    "url": "git+https://github.com/calebephrem/hookto.git"
   },
   "license": "MIT",
   "author": {
