@@ -1,11 +1,9 @@
 import { defineHook } from "../../../lib/eventHandler.js";
-import { getConfig } from "../../../lib/getConfig.js";
 import { applyLabel } from "../../../lib/label.js";
 
 export default defineHook({
   events: ["issues.opened", "issues.reopened"],
-  callback: async (ctx) => {
-    const config = await getConfig(ctx);
+  callback: async ({ ctx, config }) => {
     const { enabled, issueOpen } = config.hooks.label;
 
     console.log("[label/issueOpen] Event received", enabled, issueOpen);

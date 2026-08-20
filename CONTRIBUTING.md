@@ -136,8 +136,7 @@ import { getConfig } from "@/lib/getConfig.js";
 
 export default defineHook({
   events: ["issues.opened"],
-  async callback(ctx) {
-    const config = await getConfig(ctx);
+  async callback({ ctx, config }) {
     const { enabled, label } = config.hooks.needsTriage;
 
     if (!enabled) return;

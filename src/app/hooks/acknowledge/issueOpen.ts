@@ -1,11 +1,8 @@
 import { defineHook } from "../../../lib/eventHandler.js";
-import { getConfig } from "../../../lib/getConfig.js";
 
 export default defineHook({
   events: ["issues.opened"],
-  callback: async (ctx) => {
-    const config = await getConfig(ctx);
-
+  callback: async ({ ctx, config }) => {
     if (
       !config.hooks.acknowledge.enabled ||
       ctx.payload.issue.user?.type === "Bot"

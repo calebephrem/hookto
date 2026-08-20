@@ -1,5 +1,4 @@
 import { defineHook } from "../../../lib/eventHandler.js";
-import { getConfig } from "../../../lib/getConfig.js";
 import { buildGFM } from "../../../utils/buildGFM.js";
 
 const signedOffByPattern = /^Signed-off-by:\s+.+\s+<\S+@\S+>\s*$/im;
@@ -10,9 +9,7 @@ export default defineHook({
     "pull_request.reopened",
     "pull_request.synchronize",
   ],
-  callback: async (ctx) => {
-    const config = await getConfig(ctx);
-
+  callback: async ({ ctx, config }) => {
     if (!config.hooks.dco.enabled) return;
 
     const { fail } = config.hooks.dco;

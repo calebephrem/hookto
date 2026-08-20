@@ -6,7 +6,7 @@ import { defineCommand } from "../../lib/eventHandler.js";
 import recommendedConfig from "../../templates/recommended.json" with { type: "json" };
 import { buildGFM } from "../../utils/buildGFM.js";
 
-export default defineCommand(async (ctx, cmd) => {
+export default defineCommand(async ({ ctx, cmd }) => {
   if (cmd.command !== "config") return;
 
   const { owner, repo } = ctx.repo();

@@ -1,6 +1,5 @@
 import { minimatch } from "minimatch";
 import { defineHook } from "../../../lib/eventHandler.js";
-import { getConfig } from "../../../lib/getConfig.js";
 import { applyLabel } from "../../../lib/label.js";
 
 export default defineHook({
@@ -9,8 +8,7 @@ export default defineHook({
     "pull_request.synchronize",
     "pull_request.reopened",
   ],
-  callback: async (ctx) => {
-    const config = await getConfig(ctx);
+  callback: async ({ ctx, config }) => {
     const { enabled, prOpen } = config.hooks.label;
 
     if (!enabled || !prOpen.enabled || !prOpen.rules.length) return;
