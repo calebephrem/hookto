@@ -7,13 +7,12 @@ import { extractLinks } from "../../../utils/extractLinks.js";
 export default defineHook({
   events: ["issue_comment.created"],
   callback: async (ctx) => {
-    if (ctx.payload.comment.user?.type === "Bot") return;
-
     const config = await getConfig(ctx);
 
     if (
       !config.hooks.unfurl.enabled ||
-      !config.hooks.unfurl.issueComment.enabled
+      !config.hooks.unfurl.issueComment.enabled ||
+      ctx.payload.comment.user?.type === "Bot"
     )
       return;
 

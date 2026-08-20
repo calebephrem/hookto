@@ -30,9 +30,7 @@ export default defineHook({
 
     for (const rule of rules) {
       const isMatch = files.some((file) =>
-        rule.paths.some((pattern) =>
-          pattern === "*" ? true : minimatch(file, pattern),
-        ),
+        rule.paths.some((pattern) => minimatch(file, pattern)),
       );
 
       if (isMatch) {

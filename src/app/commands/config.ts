@@ -53,7 +53,7 @@ export default defineCommand(async (ctx, cmd) => {
     const { data: pr } = await ctx.octokit.rest.pulls.create({
       owner,
       repo,
-      title: commitMessage,
+      title: commitMessage.split("\n")[0],
       head: branch,
       base: repoData.default_branch,
       body: buildGFM([

@@ -6,13 +6,9 @@ export default defineHook({
   callback: async (ctx) => {
     const config = await getConfig(ctx);
 
-    const username =
-      ((await ctx.octokit.rest.apps.getAuthenticated()).data?.slug ??
-        "hookto") + "[bot]";
-
     if (
       !config.hooks.acknowledge.enabled ||
-      ctx.payload.pull_request.user.login === username
+      ctx.payload.pull_request.user?.type === "Bot"
     )
       return;
 

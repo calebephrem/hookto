@@ -7,11 +7,13 @@ import { extractLinks } from "../../../utils/extractLinks.js";
 export default defineHook({
   events: ["issues.opened"],
   callback: async (ctx) => {
-    if (ctx.payload.issue.user?.type === "Bot") return;
-
     const config = await getConfig(ctx);
 
-    if (!config.hooks.unfurl.enabled || !config.hooks.unfurl.issueOpen.enabled)
+    if (
+      !config.hooks.unfurl.enabled ||
+      !config.hooks.unfurl.issueOpen.enabled ||
+      ctx.payload.issue.user?.type === "Bot"
+    )
       return;
 
     const links = Array.from(

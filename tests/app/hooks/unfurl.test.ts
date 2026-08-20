@@ -15,9 +15,6 @@ vi.mock("../../../src/utils/buildEmbed.js", () => ({
 
 import { unfurl } from "unfurl.js";
 
-// NOTE: written against config.hooks.unfurl.* to match the hooks/unfurl
-// folder name. If the config field is still named "embed" internally,
-// swap every `unfurl:` below for `embed:`.
 function withConfig(overrides: Partial<Config["hooks"]["unfurl"]>): Config {
   return {
     ...defaultConfig,

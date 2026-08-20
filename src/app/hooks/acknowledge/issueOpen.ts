@@ -6,7 +6,11 @@ export default defineHook({
   callback: async (ctx) => {
     const config = await getConfig(ctx);
 
-    if (!config.hooks.acknowledge.enabled) return;
+    if (
+      !config.hooks.acknowledge.enabled ||
+      ctx.payload.issue.user?.type === "Bot"
+    )
+      return;
 
     const { enabled, message } = config.hooks.acknowledge.issueOpen;
 

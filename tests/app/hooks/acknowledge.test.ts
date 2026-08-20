@@ -8,11 +8,23 @@ import { acknowledgeSchema } from "../../../src/app/hooks/acknowledge/schema.js"
 import * as configModule from "../../../src/lib/getConfig.js";
 import { defaultConfig, type Config } from "../../../src/schemas/config.js";
 
-function createMockContext() {
+function createMockContext(
+  userType: "User" | "Bot" = "User",
+  eventType: "issue" | "pull_request" = "issue",
+) {
   const createCommentMock = vi.fn().mockResolvedValue({ data: { id: 1 } });
+
+  const payloadKey = eventType === "pull_request" ? "pull_request" : "issue";
+
   const mockCtx = {
+    payload: {
+      [payloadKey]: {
+        number: 1,
+        user: { type: userType },
+      },
+    },
     repo: () => ({ owner: "testowner", repo: "testrepo" }),
-    issue: (extra: Record<string, unknown>) => ({
+    issue: (extra: Record<string, unknown> = {}) => ({
       owner: "testowner",
       repo: "testrepo",
       issue_number: 1,
@@ -73,8 +85,11 @@ describe("acknowledge / prOpen", () => {
     expect(prOpenHook.events).toEqual(["pull_request.opened"]);
   });
 
-  it("comments the configured message when enabled", async () => {
-    const { mockCtx, createCommentMock } = createMockContext();
+  it("comments the configured message for real users when enabled", async () => {
+    const { mockCtx, createCommentMock } = createMockContext(
+      "User",
+      "pull_request",
+    );
     vi.spyOn(configModule, "getConfig").mockResolvedValue(
       withAcknowledgeConfig({
         prOpen: { enabled: true, message: "hi new PR" },
@@ -89,8 +104,27 @@ describe("acknowledge / prOpen", () => {
     );
   });
 
+  it("ignores PRs opened by bots", async () => {
+    const { mockCtx, createCommentMock } = createMockContext(
+      "Bot",
+      "pull_request",
+    );
+    vi.spyOn(configModule, "getConfig").mockResolvedValue(
+      withAcknowledgeConfig({
+        prOpen: { enabled: true, message: "hi new PR" },
+      }),
+    );
+
+    await prOpenHook.callback(mockCtx as Context<"pull_request.opened">);
+
+    expect(createCommentMock).not.toHaveBeenCalled();
+  });
+
   it("does nothing when prOpen is disabled but the hook itself is enabled", async () => {
-    const { mockCtx, createCommentMock } = createMockContext();
+    const { mockCtx, createCommentMock } = createMockContext(
+      "User",
+      "pull_request",
+    );
     vi.spyOn(configModule, "getConfig").mockResolvedValue(
       withAcknowledgeConfig({
         prOpen: { enabled: false, message: "hi new PR" },
@@ -103,7 +137,10 @@ describe("acknowledge / prOpen", () => {
   });
 
   it("does nothing when the whole acknowledge hook is disabled", async () => {
-    const { mockCtx, createCommentMock } = createMockContext();
+    const { mockCtx, createCommentMock } = createMockContext(
+      "User",
+      "pull_request",
+    );
     const config = withAcknowledgeConfig({
       prOpen: { enabled: true, message: "hi" },
     });
@@ -121,8 +158,11 @@ describe("acknowledge / prClose", () => {
     expect(prCloseHook.events).toEqual(["pull_request.closed"]);
   });
 
-  it("comments the configured message when enabled", async () => {
-    const { mockCtx, createCommentMock } = createMockContext();
+  it("comments the configured message for real users when enabled", async () => {
+    const { mockCtx, createCommentMock } = createMockContext(
+      "User",
+      "pull_request",
+    );
     vi.spyOn(configModule, "getConfig").mockResolvedValue(
       withAcknowledgeConfig({ prClose: { enabled: true, message: "thanks!" } }),
     );
@@ -134,8 +174,25 @@ describe("acknowledge / prClose", () => {
     );
   });
 
+  it("ignores PRs closed by bots", async () => {
+    const { mockCtx, createCommentMock } = createMockContext(
+      "Bot",
+      "pull_request",
+    );
+    vi.spyOn(configModule, "getConfig").mockResolvedValue(
+      withAcknowledgeConfig({ prClose: { enabled: true, message: "thanks!" } }),
+    );
+
+    await prCloseHook.callback(mockCtx as Context<"pull_request.closed">);
+
+    expect(createCommentMock).not.toHaveBeenCalled();
+  });
+
   it("does nothing when disabled", async () => {
-    const { mockCtx, createCommentMock } = createMockContext();
+    const { mockCtx, createCommentMock } = createMockContext(
+      "User",
+      "pull_request",
+    );
     vi.spyOn(configModule, "getConfig").mockResolvedValue(
       withAcknowledgeConfig({
         prClose: { enabled: false, message: "thanks!" },
@@ -153,8 +210,8 @@ describe("acknowledge / issueOpen", () => {
     expect(issueOpenHook.events).toEqual(["issues.opened"]);
   });
 
-  it("comments the configured message when enabled", async () => {
-    const { mockCtx, createCommentMock } = createMockContext();
+  it("comments the configured message for real users when enabled", async () => {
+    const { mockCtx, createCommentMock } = createMockContext("User", "issue");
     vi.spyOn(configModule, "getConfig").mockResolvedValue(
       withAcknowledgeConfig({
         issueOpen: { enabled: true, message: "hi new issue" },
@@ -168,8 +225,21 @@ describe("acknowledge / issueOpen", () => {
     );
   });
 
+  it("ignores issues opened by bots", async () => {
+    const { mockCtx, createCommentMock } = createMockContext("Bot", "issue");
+    vi.spyOn(configModule, "getConfig").mockResolvedValue(
+      withAcknowledgeConfig({
+        issueOpen: { enabled: true, message: "hi new issue" },
+      }),
+    );
+
+    await issueOpenHook.callback(mockCtx as Context<"issues.opened">);
+
+    expect(createCommentMock).not.toHaveBeenCalled();
+  });
+
   it("does nothing when disabled", async () => {
-    const { mockCtx, createCommentMock } = createMockContext();
+    const { mockCtx, createCommentMock } = createMockContext("User", "issue");
     vi.spyOn(configModule, "getConfig").mockResolvedValue(
       withAcknowledgeConfig({ issueOpen: { enabled: false, message: "hi" } }),
     );
@@ -185,8 +255,8 @@ describe("acknowledge / issueClose", () => {
     expect(issueCloseHook.events).toEqual(["issues.closed"]);
   });
 
-  it("comments the configured message when enabled", async () => {
-    const { mockCtx, createCommentMock } = createMockContext();
+  it("comments the configured message for real users when enabled", async () => {
+    const { mockCtx, createCommentMock } = createMockContext("User", "issue");
     vi.spyOn(configModule, "getConfig").mockResolvedValue(
       withAcknowledgeConfig({
         issueClose: { enabled: true, message: "closed, thanks" },
@@ -200,8 +270,21 @@ describe("acknowledge / issueClose", () => {
     );
   });
 
+  it("ignores issues closed by bots", async () => {
+    const { mockCtx, createCommentMock } = createMockContext("Bot", "issue");
+    vi.spyOn(configModule, "getConfig").mockResolvedValue(
+      withAcknowledgeConfig({
+        issueClose: { enabled: true, message: "closed, thanks" },
+      }),
+    );
+
+    await issueCloseHook.callback(mockCtx as Context<"issues.closed">);
+
+    expect(createCommentMock).not.toHaveBeenCalled();
+  });
+
   it("does nothing when disabled", async () => {
-    const { mockCtx, createCommentMock } = createMockContext();
+    const { mockCtx, createCommentMock } = createMockContext("User", "issue");
     vi.spyOn(configModule, "getConfig").mockResolvedValue(
       withAcknowledgeConfig({
         issueClose: { enabled: false, message: "closed" },
