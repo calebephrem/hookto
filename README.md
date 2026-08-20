@@ -31,11 +31,12 @@ Set these permissions and events:
 **Permissions**
 
 - Repository permissions:
-  - Contents: read and write
-  - Issues: read and write
-  - Pull requests: read and write
-  - Checks: read and write
-  - Metadata: read
+  - Contents: Read and write
+  - Issues: Read and write
+  - Pull requests: Read and write
+  - Checks: Read and write
+  - Discussions: Read and write
+  - Metadata: Read
 
 **Events**
 
@@ -43,6 +44,8 @@ Set these permissions and events:
 - Issues
 - Pull request
 - Push
+- Discussion
+- Discussion comment
 
 > [!IMPORTANT]
 > Permission and event settings might need to be updated as new hooks are added in future updates.

@@ -25,6 +25,8 @@ function withConfig(overrides: Partial<Config["hooks"]["unfurl"]>): Config {
         issueComment: { enabled: true },
         prOpen: { enabled: true },
         issueOpen: { enabled: true },
+        discussionComment: { enabled: true },
+        discussionOpen: { enabled: true },
         ...overrides,
       },
     },

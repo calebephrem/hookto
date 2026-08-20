@@ -28,7 +28,7 @@ export default defineHook({
     const labelsToApply = new Set<string>();
 
     for (const rule of prOpen.rules) {
-      // 1. Keyword matching with title/body toggles
+      // Keyword matching with title/body toggles
       for (const item of rule.keywords) {
         const hasKeywordMatch = item.keywords.some((kw) => {
           const lowerKw = kw.toLowerCase().trim();
@@ -45,7 +45,7 @@ export default defineHook({
         }
       }
 
-      // 2. Path matching using minimatch
+      // Path matching using minimatch
       for (const item of rule.paths) {
         const hasPathMatch = files.some((file) =>
           item.paths.some((pattern) => minimatch(file, pattern)),

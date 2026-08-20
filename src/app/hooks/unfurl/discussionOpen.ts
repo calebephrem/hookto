@@ -1,0 +1,55 @@
+import { unfurl } from "unfurl.js";
+import { defineHook } from "../../../lib/eventHandler.js";
+import { buildEmbed } from "../../../utils/buildEmbed.js";
+import { extractLinks } from "../../../utils/extractLinks.js";
+
+export default defineHook({
+  events: ["discussion.created"],
+  callback: async ({ ctx, config }) => {
+    if (
+      !config.hooks.unfurl.enabled ||
+      !config.hooks.unfurl.discussionOpen?.enabled ||
+      ctx.payload.discussion.user?.type === "Bot"
+    )
+      return;
+
+    const links = Array.from(
+      new Set(extractLinks(ctx.payload.discussion.body || "")),
+    );
+
+    if (links.length === 0) return;
+
+    const promises = links.map(async (link) => {
+      try {
+        return await unfurl(link);
+      } catch {
+        return null;
+      }
+    });
+
+    const embeds = (await Promise.all(promises)).filter(
+      (embed): embed is NonNullable<typeof embed> => embed !== null,
+    );
+
+    if (embeds.length === 0) return;
+
+    const resolved = embeds.map((embed) => buildEmbed(embed));
+    const body = ctx.payload.discussion.body + "\n\n" + resolved.join("\n");
+
+    await ctx.octokit.graphql(
+      `
+      mutation updateDiscussion($nodeId: ID!, $body: String!) {
+        updateDiscussion(input: { discussionId: $nodeId, body: $body }) {
+          discussion {
+            id
+          }
+        }
+      }
+      `,
+      {
+        nodeId: ctx.payload.discussion.node_id,
+        body,
+      },
+    );
+  },
+});
