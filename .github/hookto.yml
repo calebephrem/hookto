@@ -1,0 +1,10 @@
+hooks:
+  acknowledge:
+    prOpen:
+      message: >-
+        Thanks for opening this PR! A maintainer will take a look at your
+        changes shortly.
+  conventionalCommits:
+    enabled: true
+  unfurl:
+    enabled: true
