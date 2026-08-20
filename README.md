@@ -81,6 +81,9 @@ If Hookto makes your workflow easier, drop a ⭐ on the repository and follow fo
 
 ## Configuration
 
+> [!TIP]
+> Comment `!config` anywhere to automatically apply the recommended configuration!
+
 All configuration happens in a file named `.github/hookto.yml`, placed inside a repository you want Hookto to manage. Every hook has its own section in this file, and you can enable, disable, or customize each one independently.
 
 ### Example Configuration

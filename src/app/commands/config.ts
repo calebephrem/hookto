@@ -59,7 +59,7 @@ export default defineCommand(async ({ ctx, cmd }) => {
       body: buildGFM([
         {
           type: "note",
-          text: `> Adds the recommended \`${configPath}\` configuration file. Review and merge to enable your hooks!`,
+          text: `Adds the recommended \`${configPath}\` configuration file. Review and merge to enable your hooks!`,
         },
       ]),
     });
@@ -71,7 +71,7 @@ export default defineCommand(async ({ ctx, cmd }) => {
       body: buildGFM([
         {
           type: "tip",
-          text: `> Created configuration file and made a PR (#${pr.number})`,
+          text: `Created configuration file and made a PR (#${pr.number})`,
         },
       ]),
     });
