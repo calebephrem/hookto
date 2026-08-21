@@ -26,9 +26,13 @@ function createMockContext(
 ) {
   const createCheckMock = vi.fn().mockResolvedValue({ data: { id: 42 } });
   const updateCheckMock = vi.fn().mockResolvedValue({});
-  const listCommitsMock = vi.fn().mockResolvedValue({
-    data: commits.map((c) => ({ commit: { message: c.message }, sha: c.sha })),
-  });
+  const listCommitsMock = vi
+    .fn()
+    .mockImplementation(() =>
+      Promise.resolve(
+        commits.map((c) => ({ commit: { message: c.message }, sha: c.sha })),
+      ),
+    );
   const listCommentsMock = vi.fn().mockResolvedValue({ data: [] });
   const createCommentMock = vi.fn().mockResolvedValue({ data: { id: 1 } });
   const updateCommentMock = vi.fn().mockResolvedValue({});
@@ -55,6 +59,10 @@ function createMockContext(
       ...extra,
     }),
     octokit: {
+      paginate: vi.fn().mockImplementation(async (fn, params) => {
+        const res = await fn(params);
+        return res;
+      }),
       rest: {
         checks: { create: createCheckMock, update: updateCheckMock },
         pulls: { listCommits: listCommitsMock },

@@ -1,348 +1,258 @@
 import type { Context } from "probot";
-import { describe, expect, it, vi } from "vitest";
-import issueOpenHook from "../../../src/app/hooks/label/issueOpen.js";
-import prOpenHook from "../../../src/app/hooks/label/prOpen.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import conventionalCommitsHook from "../../../src/app/hooks/conventionalCommits/index.js";
 import * as configModule from "../../../src/lib/getConfig.js";
-import * as applyLabelModule from "../../../src/lib/label.js";
 import { defaultConfig, type Config } from "../../../src/schemas/config.js";
 
-vi.mock("../../../src/lib/label.js", () => ({
-  applyLabel: vi.fn(),
+vi.mock("../../../src/utils/conventionalCommits.js", () => ({
+  conventionalCommitTypes: ["feat", "fix", "chore", "docs"],
+  parseConventionalCommits: vi.fn(),
 }));
 
-function mockKeyword(
-  keywords: string[],
-  labels: string[],
-  title = true,
-  body = true,
+import {
+  parseConventionalCommits,
+  type ConventionalCommit,
+} from "../../../src/utils/conventionalCommits.js";
+
+const validCommit: ConventionalCommit = {
+  type: "feat",
+  description: "a valid conventional commit",
+  breaking: false,
+};
+
+function createMockContext(
+  title: string,
+  commits: { message: string; sha: string }[],
 ) {
-  return { keywords, labels, title, body };
+  const createCheckMock = vi.fn().mockResolvedValue({ data: { id: 42 } });
+  const updateCheckMock = vi.fn().mockResolvedValue({});
+  const listCommitsMock = vi
+    .fn()
+    .mockImplementation(() =>
+      Promise.resolve(
+        commits.map((c) => ({ commit: { message: c.message }, sha: c.sha })),
+      ),
+    );
+  const listCommentsMock = vi.fn().mockResolvedValue({ data: [] });
+  const createCommentMock = vi.fn().mockResolvedValue({ data: { id: 1 } });
+  const updateCommentMock = vi.fn().mockResolvedValue({});
+
+  const mockCtx = {
+    payload: {
+      pull_request: {
+        title,
+        number: 1,
+        head: {
+          sha: "headsha123",
+          ref: "feature-branch",
+        },
+        base: {
+          ref: "main",
+        },
+      },
+    },
+    repo: () => ({ owner: "testowner", repo: "testrepo" }),
+    issue: (extra: Record<string, unknown> = {}) => ({
+      owner: "testowner",
+      repo: "testrepo",
+      issue_number: 1,
+      ...extra,
+    }),
+    octokit: {
+      paginate: vi.fn().mockImplementation(async (fn, params) => {
+        const res = await fn(params);
+        return res;
+      }),
+      rest: {
+        checks: { create: createCheckMock, update: updateCheckMock },
+        pulls: { listCommits: listCommitsMock },
+        issues: {
+          listComments: listCommentsMock,
+          createComment: createCommentMock,
+          updateComment: updateCommentMock,
+        },
+      },
+    },
+  } as unknown as Context<"pull_request.opened">;
+
+  return {
+    mockCtx,
+    createCheckMock,
+    updateCheckMock,
+    listCommentsMock,
+    createCommentMock,
+    updateCommentMock,
+  };
 }
 
-function withConfig(overrides: Partial<Config["hooks"]["label"]>): Config {
+function withConfig(
+  overrides: Partial<Config["hooks"]["conventionalCommits"]>,
+): Config {
   return {
     ...defaultConfig,
     hooks: {
       ...defaultConfig.hooks,
-      label: {
+      conventionalCommits: {
         enabled: true,
-        prOpen: {
-          enabled: true,
-          rules: [],
-        },
-        issueOpen: {
-          enabled: true,
-          rules: [],
-        },
+        fail: true,
+        title: true,
+        commitMessages: true,
         ...overrides,
       },
     },
   };
 }
 
-describe("label / prOpen", () => {
-  it("registers pull_request events", () => {
-    expect(prOpenHook.events).toEqual([
+beforeEach(() => {
+  vi.mocked(parseConventionalCommits).mockReset();
+});
+
+describe("conventionalCommits hook", () => {
+  it("registers pull_request opened, reopened, and synchronize", () => {
+    expect(conventionalCommitsHook.events).toEqual([
       "pull_request.opened",
-      "pull_request.synchronize",
       "pull_request.reopened",
+      "pull_request.synchronize",
     ]);
   });
 
-  it("does nothing when the hook-wide toggle is disabled", async () => {
-    const applyLabelSpy = vi.spyOn(applyLabelModule, "applyLabel");
+  it("does nothing when disabled", async () => {
+    const { mockCtx, createCheckMock, createCommentMock } = createMockContext(
+      "feat: thing",
+      [],
+    );
+    vi.spyOn(configModule, "getConfig").mockResolvedValue(
+      withConfig({ enabled: false }),
+    );
 
-    const mockCtx = {
-      payload: {
-        pull_request: {
-          number: 1,
-          title: "fix: bug in auth",
-          body: "some description",
-        },
-      },
-      repo: () => ({ owner: "o", repo: "r" }),
-      octokit: {
-        paginate: vi.fn().mockResolvedValue([]),
-        rest: { pulls: { listFiles: vi.fn() } },
-      },
-    } as unknown as Context<"pull_request.opened">;
+    await conventionalCommitsHook.callback(mockCtx);
 
-    const config = withConfig({
-      enabled: false,
-      prOpen: {
-        enabled: true,
-        rules: [
-          {
-            keywords: [mockKeyword(["fix"], ["bug"])],
-            paths: [],
-          },
-        ],
-      },
-    });
-
-    vi.spyOn(configModule, "getConfig").mockResolvedValue(config);
-
-    await prOpenHook.callback(mockCtx);
-
-    expect(applyLabelSpy).not.toHaveBeenCalled();
+    expect(createCheckMock).not.toHaveBeenCalled();
+    expect(createCommentMock).not.toHaveBeenCalled();
   });
 
-  it("applies labels based on keyword and path matches", async () => {
-    const applyLabelSpy = vi
-      .spyOn(applyLabelModule, "applyLabel")
-      .mockResolvedValue();
+  it("posts a success comment and passing check when title and commits are valid", async () => {
+    vi.mocked(parseConventionalCommits).mockReturnValue(validCommit);
+    const { mockCtx, createCheckMock, updateCheckMock, createCommentMock } =
+      createMockContext("feat: add new thing", [
+        { message: "feat: add new thing", sha: "abc1234" },
+      ]);
+    vi.spyOn(configModule, "getConfig").mockResolvedValue(withConfig({}));
 
-    const mockCtx = {
-      payload: {
-        pull_request: {
-          number: 10,
-          title: "feat: add user dashboard",
-          body: "resolves issue with missing UI",
-        },
-      },
-      repo: () => ({ owner: "o", repo: "r" }),
-      octokit: {
-        paginate: vi
-          .fn()
-          .mockResolvedValue([
-            { filename: "src/components/Dashboard.tsx" },
-            { filename: "docs/readme.md" },
-          ]),
-        rest: { pulls: { listFiles: vi.fn() } },
-      },
-    } as unknown as Context<"pull_request.opened">;
+    await conventionalCommitsHook.callback(mockCtx);
 
-    const config = withConfig({
-      prOpen: {
-        enabled: true,
-        rules: [
-          {
-            keywords: [mockKeyword(["feat"], ["enhancement"])],
-            paths: [{ paths: ["src/components/**"], labels: ["frontend"] }],
-          },
-        ],
-      },
-    });
-
-    vi.spyOn(configModule, "getConfig").mockResolvedValue(config);
-
-    await prOpenHook.callback(mockCtx);
-
-    expect(applyLabelSpy).toHaveBeenCalledTimes(2);
-    expect(applyLabelSpy).toHaveBeenCalledWith(mockCtx, "enhancement");
-    expect(applyLabelSpy).toHaveBeenCalledWith(mockCtx, "frontend");
+    expect(createCheckMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        status: "in_progress",
+        head_sha: "headsha123",
+      }),
+    );
+    expect(updateCheckMock).toHaveBeenCalledWith(
+      expect.objectContaining({ conclusion: "success" }),
+    );
+    expect(createCommentMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        body: expect.stringContaining(
+          "All commits and the PR title adhere to the [Conventional Commits](https://www.conventionalcommits.org/) specification. Good to go!",
+        ),
+      }),
+    );
   });
 
-  it("does not apply labels when no rules match", async () => {
-    const applyLabelSpy = vi.spyOn(applyLabelModule, "applyLabel");
+  it("posts a failure comment and failing check when the title is invalid", async () => {
+    vi.mocked(parseConventionalCommits).mockImplementation((msg: string) =>
+      msg !== "bad title" ? validCommit : false,
+    );
+    const { mockCtx, updateCheckMock, createCommentMock } = createMockContext(
+      "bad title",
+      [{ message: "feat: fine", sha: "abc1234" }],
+    );
+    vi.spyOn(configModule, "getConfig").mockResolvedValue(withConfig({}));
 
-    const mockCtx = {
-      payload: {
-        pull_request: {
-          number: 2,
-          title: "chore: clean up dependencies",
-          body: "no matching words",
-        },
-      },
-      repo: () => ({ owner: "o", repo: "r" }),
-      octokit: {
-        paginate: vi.fn().mockResolvedValue([{ filename: "package.json" }]),
-        rest: { pulls: { listFiles: vi.fn() } },
-      },
-    } as unknown as Context<"pull_request.opened">;
+    await conventionalCommitsHook.callback(mockCtx);
 
-    const config = withConfig({
-      prOpen: {
-        enabled: true,
-        rules: [
-          {
-            keywords: [mockKeyword(["bugfix"], ["bug"])],
-            paths: [{ paths: ["src/**/*.ts"], labels: ["backend"] }],
-          },
-        ],
-      },
-    });
-
-    vi.spyOn(configModule, "getConfig").mockResolvedValue(config);
-
-    await prOpenHook.callback(mockCtx);
-
-    expect(applyLabelSpy).not.toHaveBeenCalled();
-  });
-});
-
-describe("label / issueOpen", () => {
-  it("registers issues events", () => {
-    expect(issueOpenHook.events).toEqual(["issues.opened", "issues.reopened"]);
+    expect(updateCheckMock).toHaveBeenCalledWith(
+      expect.objectContaining({ conclusion: "failure" }),
+    );
+    expect(createCommentMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        body: expect.stringContaining("bad title"),
+      }),
+    );
   });
 
-  it("applies labels when issue title or body matches keywords", async () => {
-    const applyLabelSpy = vi
-      .spyOn(applyLabelModule, "applyLabel")
-      .mockResolvedValue();
+  it("skips creating a check run when fail is false, but still comments", async () => {
+    vi.mocked(parseConventionalCommits).mockReturnValue(false);
+    const { mockCtx, createCheckMock, updateCheckMock, createCommentMock } =
+      createMockContext("bad title", []);
+    vi.spyOn(configModule, "getConfig").mockResolvedValue(
+      withConfig({ fail: false }),
+    );
 
-    const mockCtx = {
-      payload: {
-        issue: {
-          number: 5,
-          title: "Critical bug on payment page",
-          body: "The checkout process fails silently.",
-        },
-      },
-    } as unknown as Context<"issues.opened">;
+    await conventionalCommitsHook.callback(mockCtx);
 
-    const config = withConfig({
-      issueOpen: {
-        enabled: true,
-        rules: [
-          mockKeyword(["bug", "fail"], ["bug", "triage"]),
-          mockKeyword(["documentation"], ["docs"]),
-        ],
-      },
-    });
-
-    vi.spyOn(configModule, "getConfig").mockResolvedValue(config);
-
-    await issueOpenHook.callback(mockCtx);
-
-    expect(applyLabelSpy).toHaveBeenCalledTimes(2);
-    expect(applyLabelSpy).toHaveBeenCalledWith(mockCtx, "bug");
-    expect(applyLabelSpy).toHaveBeenCalledWith(mockCtx, "triage");
+    expect(createCheckMock).not.toHaveBeenCalled();
+    expect(updateCheckMock).not.toHaveBeenCalled();
+    expect(createCommentMock).toHaveBeenCalled();
   });
 
-  it("does nothing when issueOpen is explicitly disabled", async () => {
-    const applyLabelSpy = vi.spyOn(applyLabelModule, "applyLabel");
-
-    const mockCtx = {
-      payload: {
-        issue: {
-          number: 1,
-          title: "bug report",
-          body: "details here",
+  it("updates an existing bot comment instead of creating a new one", async () => {
+    vi.mocked(parseConventionalCommits).mockReturnValue(validCommit);
+    const { mockCtx, listCommentsMock, createCommentMock, updateCommentMock } =
+      createMockContext("feat: thing", []);
+    listCommentsMock.mockResolvedValue({
+      data: [
+        {
+          id: 999,
+          user: { type: "Bot" },
+          body: "<!-- hookto-conventional-commits -->\nold summary",
         },
-      },
-    } as unknown as Context<"issues.opened">;
-
-    const config = withConfig({
-      issueOpen: {
-        enabled: false,
-        rules: [mockKeyword(["bug"], ["bug"])],
-      },
+      ],
     });
+    vi.spyOn(configModule, "getConfig").mockResolvedValue(withConfig({}));
 
-    vi.spyOn(configModule, "getConfig").mockResolvedValue(config);
+    await conventionalCommitsHook.callback(mockCtx);
 
-    await issueOpenHook.callback(mockCtx);
-
-    expect(applyLabelSpy).not.toHaveBeenCalled();
-  });
-});
-
-describe("label / title vs body matching and file paths", () => {
-  it("only matches title when body option is disabled", async () => {
-    const applyLabelSpy = vi
-      .spyOn(applyLabelModule, "applyLabel")
-      .mockResolvedValue();
-
-    const mockCtx = {
-      payload: {
-        issue: {
-          number: 1,
-          title: "Regular issue",
-          body: "This has a critical bug in it",
-        },
-      },
-    } as unknown as Context<"issues.opened">;
-
-    const config = withConfig({
-      issueOpen: {
-        enabled: true,
-        rules: [mockKeyword(["bug"], ["bug"], true, false)],
-      },
-    });
-
-    vi.spyOn(configModule, "getConfig").mockResolvedValue(config);
-
-    await issueOpenHook.callback(mockCtx);
-
-    expect(applyLabelSpy).not.toHaveBeenCalled();
+    expect(updateCommentMock).toHaveBeenCalledWith(
+      expect.objectContaining({ comment_id: 999 }),
+    );
+    expect(createCommentMock).not.toHaveBeenCalled();
   });
 
-  it("matches body when body option is enabled", async () => {
-    const applyLabelSpy = vi
-      .spyOn(applyLabelModule, "applyLabel")
-      .mockResolvedValue();
+  it("includes the comment mark in the success comment so it can be updated later", async () => {
+    vi.mocked(parseConventionalCommits).mockReturnValue(validCommit);
+    const { mockCtx, createCommentMock } = createMockContext("feat: thing", []);
+    vi.spyOn(configModule, "getConfig").mockResolvedValue(withConfig({}));
 
-    const mockCtx = {
-      payload: {
-        issue: {
-          number: 2,
-          title: "Regular issue",
-          body: "This has a critical bug in it",
-        },
-      },
-    } as unknown as Context<"issues.opened">;
+    await conventionalCommitsHook.callback(mockCtx);
 
-    const config = withConfig({
-      issueOpen: {
-        enabled: true,
-        rules: [mockKeyword(["bug"], ["bug"], false, true)],
-      },
-    });
-
-    vi.spyOn(configModule, "getConfig").mockResolvedValue(config);
-
-    await issueOpenHook.callback(mockCtx);
-
-    expect(applyLabelSpy).toHaveBeenCalledTimes(1);
-    expect(applyLabelSpy).toHaveBeenCalledWith(mockCtx, "bug");
+    expect(createCommentMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        body: expect.stringContaining("<!-- hookto-conventional-commits -->"),
+      }),
+    );
   });
 
-  it("applies labels when filepaths match minimatch patterns", async () => {
-    const applyLabelSpy = vi
-      .spyOn(applyLabelModule, "applyLabel")
-      .mockResolvedValue();
+  it("only checks the title when commitMessages is disabled", async () => {
+    vi.mocked(parseConventionalCommits).mockImplementation((msg: string) =>
+      msg !== "bad commit" ? validCommit : false,
+    );
+    const { mockCtx, createCommentMock } = createMockContext(
+      "feat: fine title",
+      [{ message: "bad commit", sha: "abc1234" }],
+    );
+    vi.spyOn(configModule, "getConfig").mockResolvedValue(
+      withConfig({ commitMessages: false }),
+    );
 
-    const mockCtx = {
-      payload: {
-        pull_request: {
-          number: 3,
-          title: "chore: tweak workflow",
-          body: "ci update",
-        },
-      },
-      repo: () => ({ owner: "o", repo: "r" }),
-      octokit: {
-        paginate: vi
-          .fn()
-          .mockResolvedValue([
-            { filename: ".github/workflows/ci.yml" },
-            { filename: "package.json" },
-          ]),
-        rest: { pulls: { listFiles: vi.fn() } },
-      },
-    } as unknown as Context<"pull_request.opened">;
+    await conventionalCommitsHook.callback(mockCtx);
 
-    const config = withConfig({
-      prOpen: {
-        enabled: true,
-        rules: [
-          {
-            keywords: [],
-            paths: [
-              { paths: [".github/**"], labels: ["ci"] },
-              { paths: ["src/**"], labels: ["code"] },
-            ],
-          },
-        ],
-      },
-    });
-
-    vi.spyOn(configModule, "getConfig").mockResolvedValue(config);
-
-    await prOpenHook.callback(mockCtx);
-
-    expect(applyLabelSpy).toHaveBeenCalledTimes(1);
-    expect(applyLabelSpy).toHaveBeenCalledWith(mockCtx, "ci");
+    expect(createCommentMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        body: expect.stringContaining(
+          "All commits and the PR title adhere to the [Conventional Commits](https://www.conventionalcommits.org/) specification. Good to go!",
+        ),
+      }),
+    );
   });
 });
