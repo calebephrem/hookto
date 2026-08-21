@@ -1,30 +1,21 @@
-import z from "zod";
+import { z } from "zod";
 
-const keywordsSchema = z.object({
-  keywords: z.array(z.string()).default([]),
+const ruleSchema = z.object({
+  keywords: z.array(z.string()).optional(),
+  paths: z.array(z.string()).optional(),
   labels: z.array(z.string()).default([]),
   title: z.boolean().default(true),
   body: z.boolean().default(false),
 });
 
-const pathsSchema = z.object({
-  paths: z.array(z.string()).default([]),
-  labels: z.array(z.string()).default([]),
-});
-
-const rulesSchema = z.object({
-  keywords: z.array(keywordsSchema).default([]),
-  paths: z.array(pathsSchema).default([]),
-});
-
 const prOpenSchema = z.object({
   enabled: z.boolean().default(true),
-  rules: z.array(rulesSchema).default([]),
+  rules: z.array(ruleSchema).default([]),
 });
 
 const issueOpenSchema = z.object({
   enabled: z.boolean().default(true),
-  rules: z.array(keywordsSchema).default([]),
+  rules: z.array(ruleSchema).default([]),
 });
 
 export const labelSchema = z.object({
