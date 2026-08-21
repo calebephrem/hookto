@@ -5,6 +5,7 @@ import { cacheTTL, configPath, redisTimeout } from "../constants/config.js";
 import { redis } from "../index.js";
 import { configSchema, defaultConfig, type Config } from "../schemas/config.js";
 import { hooksSchema } from "../schemas/hooks.js";
+import { settingsSchema } from "../schemas/settings.js";
 import { deepMerge } from "../utils/deepMerge.js";
 import { withTimeout } from "../utils/withTimeout.js";
 import { logger } from "./logger.js";
@@ -18,13 +19,17 @@ function cacheKey(owner: string, repo: string): string {
 
 function validateConfig(raw: unknown): Config {
   const whole = configSchema.safeParse(raw);
+
   if (whole.success) return whole.data;
+
   const rawObj = (typeof raw === "object" && raw !== null ? raw : {}) as Record<
     string,
     unknown
   >;
+
   const rawHooks = (rawObj.hooks ?? {}) as Record<string, unknown>;
   const validatedHooks: Record<string, unknown> = {};
+
   for (const [hookName, hookSchema] of Object.entries(hooksSchema.shape)) {
     const result = (hookSchema as z.ZodTypeAny).safeParse(rawHooks[hookName]);
     if (!result.success) {
@@ -37,8 +42,22 @@ function validateConfig(raw: unknown): Config {
       validatedHooks[hookName] = result.data;
     }
   }
+
+  const settingsResult = settingsSchema.safeParse(rawObj.settings);
+  const validatedSettings = settingsResult.success
+    ? settingsResult.data
+    : settingsSchema.parse({});
+
+  if (!settingsResult.success && rawObj.settings !== undefined) {
+    logger.error(
+      "settings failed validation, using defaults",
+      settingsResult.error.flatten(),
+    );
+  }
+
   return {
     ...defaultConfig,
+    settings: validatedSettings,
     hooks: validatedHooks as Config["hooks"],
   };
 }
