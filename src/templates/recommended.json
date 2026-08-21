@@ -28,14 +28,25 @@
     },
     "unfurl": {
       "enabled": true,
-      "issueComment": { "enabled": true },
-      "prOpen": { "enabled": true },
-      "issueOpen": { "enabled": true },
-      "discussionComment": { "enabled": true },
-      "discussionOpen": { "enabled": true }
+      "issueComment": {
+        "enabled": true
+      },
+      "prOpen": {
+        "enabled": true
+      },
+      "issueOpen": {
+        "enabled": true
+      },
+      "discussionComment": {
+        "enabled": true
+      },
+      "discussionOpen": {
+        "enabled": true
+      }
     },
-    "wip": { "enabled": true },
-
+    "wip": {
+      "enabled": true
+    },
     "label": {
       "enabled": true,
       "issueOpen": {
@@ -128,200 +139,196 @@
       },
       "prOpen": {
         "enabled": true,
-        "rules": {
-          "keywords": [
-            {
-              "keywords": [
-                "feat",
-                "enhance",
-                "improve",
-                "add support",
-                "new feat",
-                "functionality",
-                "added",
-                "implement",
-                "introducing"
-              ],
-              "labels": ["enhancement"],
-              "title": true,
-              "body": true
-            },
-            {
-              "keywords": [
-                "fix",
-                "bug",
-                "patch",
-                "resolve",
-                "close",
-                "crash",
-                "error",
-                "exception",
-                "hotfix",
-                "regression",
-                "correct"
-              ],
-              "labels": ["bug"],
-              "title": true,
-              "body": true
-            },
-            {
-              "keywords": [
-                "refactor",
-                "clean",
-                "restructure",
-                "rewrite",
-                "optim",
-                "perf",
-                "simplify",
-                "modularize"
-              ],
-              "labels": ["refactor"],
-              "title": true,
-              "body": true
-            },
-            {
-              "keywords": [
-                "doc",
-                "readme",
-                "typo",
-                "jsdoc",
-                "typedoc",
-                "guide",
-                "tutorial",
-                "wiki",
-                "spelling"
-              ],
-              "labels": ["docs"],
-              "title": true,
-              "body": true
-            },
-            {
-              "keywords": [
-                "test",
-                "e2e",
-                "coverage",
-                "jest",
-                "vitest",
-                "cypress",
-                "playwright",
-                "spec"
-              ],
-              "labels": ["testing"],
-              "title": true,
-              "body": true
-            },
-            {
-              "keywords": [
-                "bump",
-                "dep",
-                "upgrad",
-                "updat",
-                "package.json",
-                "pnpm-lock",
-                "yarn.lock",
-                "bun.lock",
-                "package-lock"
-              ],
-              "labels": ["dependencies"],
-              "title": true,
-              "body": true
-            },
-            {
-              "keywords": [
-                "ui",
-                "ux",
-                "style",
-                "css",
-                "tailwind",
-                "theme",
-                "layout",
-                "design",
-                "responsive"
-              ],
-              "labels": ["style"],
-              "title": true,
-              "body": true
-            },
-            {
-              "keywords": [
-                "ci",
-                "cd",
-                "action",
-                "workflow",
-                "pipeline",
-                "build",
-                "vercel",
-                "netlify",
-                "docker",
-                "deploy"
-              ],
-              "labels": ["ci/cd"],
-              "title": true,
-              "body": true
-            }
-          ],
-          "paths": [
-            {
-              "paths": [
-                "**/*.md",
-                "**/*.mdx",
-                "docs/**",
-                "**/docs/**",
-                "**/documentation/**"
-              ],
-              "labels": ["docs"]
-            },
-            {
-              "paths": [
-                "**/*.test.[jt]s*",
-                "**/*.spec.[jt]s*",
-                "**/tests/**",
-                "**/__tests__/**",
-                "**/cypress/**",
-                "**/playwright/**"
-              ],
-              "labels": ["testing"]
-            },
-            {
-              "paths": [
-                ".github/workflows/**",
-                ".circleci/**",
-                "**/Dockerfile*",
-                "**/docker-compose*.yml"
-              ],
-              "labels": ["ci/cd"]
-            },
-            {
-              "paths": [
-                "**/package.json",
-                "**/pnpm-lock.yaml",
-                "**/yarn.lock",
-                "**/package-lock.json",
-                "**/requirements*.txt",
-                "**/Pipfile*",
-                "**/pyproject.toml",
-                "**/Cargo.toml",
-                "**/Cargo.lock",
-                "**/go.mod",
-                "**/go.sum",
-                "**/Gemfile*"
-              ],
-              "labels": ["dependencies"]
-            },
-            {
-              "paths": [
-                "**/*.css",
-                "**/*.scss",
-                "**/*.sass",
-                "**/*.less",
-                "**/*.styled.[jt]s*",
-                "**/styles/**",
-                "**/theme/**"
-              ],
-              "labels": ["style"]
-            }
-          ]
-        }
+        "rules": [
+          {
+            "keywords": [
+              "feat",
+              "enhance",
+              "improve",
+              "add support",
+              "new feat",
+              "functionality",
+              "added",
+              "implement",
+              "introducing"
+            ],
+            "labels": ["enhancement"],
+            "title": true,
+            "body": true
+          },
+          {
+            "keywords": [
+              "fix",
+              "bug",
+              "patch",
+              "resolve",
+              "close",
+              "crash",
+              "error",
+              "exception",
+              "hotfix",
+              "regression",
+              "correct"
+            ],
+            "labels": ["bug"],
+            "title": true,
+            "body": true
+          },
+          {
+            "keywords": [
+              "refactor",
+              "clean",
+              "restructure",
+              "rewrite",
+              "optim",
+              "perf",
+              "simplify",
+              "modularize"
+            ],
+            "labels": ["refactor"],
+            "title": true,
+            "body": true
+          },
+          {
+            "keywords": [
+              "doc",
+              "readme",
+              "typo",
+              "jsdoc",
+              "typedoc",
+              "guide",
+              "tutorial",
+              "wiki",
+              "spelling"
+            ],
+            "labels": ["docs"],
+            "title": true,
+            "body": true
+          },
+          {
+            "keywords": [
+              "test",
+              "e2e",
+              "coverage",
+              "jest",
+              "vitest",
+              "cypress",
+              "playwright",
+              "spec"
+            ],
+            "labels": ["testing"],
+            "title": true,
+            "body": true
+          },
+          {
+            "keywords": [
+              "bump",
+              "dep",
+              "upgrad",
+              "updat",
+              "package.json",
+              "pnpm-lock",
+              "yarn.lock",
+              "bun.lock",
+              "package-lock"
+            ],
+            "labels": ["dependencies"],
+            "title": true,
+            "body": true
+          },
+          {
+            "keywords": [
+              "ui",
+              "ux",
+              "style",
+              "css",
+              "tailwind",
+              "theme",
+              "layout",
+              "design",
+              "responsive"
+            ],
+            "labels": ["style"],
+            "title": true,
+            "body": true
+          },
+          {
+            "keywords": [
+              "ci",
+              "cd",
+              "action",
+              "workflow",
+              "pipeline",
+              "build",
+              "vercel",
+              "netlify",
+              "docker",
+              "deploy"
+            ],
+            "labels": ["ci/cd"],
+            "title": true,
+            "body": true
+          },
+          {
+            "paths": [
+              "**/*.md",
+              "**/*.mdx",
+              "docs/**",
+              "**/docs/**",
+              "**/documentation/**"
+            ],
+            "labels": ["docs"]
+          },
+          {
+            "paths": [
+              "**/*.test.[jt]s*",
+              "**/*.spec.[jt]s*",
+              "**/tests/**",
+              "**/__tests__/**",
+              "**/cypress/**",
+              "**/playwright/**"
+            ],
+            "labels": ["testing"]
+          },
+          {
+            "paths": [
+              ".github/workflows/**",
+              ".circleci/**",
+              "**/Dockerfile*",
+              "**/docker-compose*.yml"
+            ],
+            "labels": ["ci/cd"]
+          },
+          {
+            "paths": [
+              "**/package.json",
+              "**/pnpm-lock.yaml",
+              "**/yarn.lock",
+              "**/package-lock.json",
+              "**/requirements*.txt",
+              "**/Pipfile*",
+              "**/pyproject.toml",
+              "**/Cargo.toml",
+              "**/Cargo.lock",
+              "**/go.mod",
+              "**/go.sum",
+              "**/Gemfile*"
+            ],
+            "labels": ["dependencies"]
+          },
+          {
+            "paths": [
+              "**/*.css",
+              "**/*.scss",
+              "**/*.sass",
+              "**/*.less",
+              "**/*.styled.[jt]s*",
+              "**/styles/**",
+              "**/theme/**"
+            ],
+            "labels": ["style"]
+          }
+        ]
       }
     }
   }
