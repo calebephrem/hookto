@@ -153,8 +153,7 @@
               "introducing"
             ],
             "labels": ["enhancement"],
-            "title": true,
-            "body": true
+            "title": true
           },
           {
             "keywords": [
@@ -171,8 +170,7 @@
               "correct"
             ],
             "labels": ["bug"],
-            "title": true,
-            "body": true
+            "title": true
           },
           {
             "keywords": [
@@ -186,8 +184,7 @@
               "modularize"
             ],
             "labels": ["refactor"],
-            "title": true,
-            "body": true
+            "title": true
           },
           {
             "keywords": [
@@ -202,8 +199,7 @@
               "spelling"
             ],
             "labels": ["docs"],
-            "title": true,
-            "body": true
+            "title": true
           },
           {
             "keywords": [
@@ -217,8 +213,7 @@
               "spec"
             ],
             "labels": ["testing"],
-            "title": true,
-            "body": true
+            "title": true
           },
           {
             "keywords": [
@@ -233,8 +228,7 @@
               "package-lock"
             ],
             "labels": ["dependencies"],
-            "title": true,
-            "body": true
+            "title": true
           },
           {
             "keywords": [
@@ -249,8 +243,7 @@
               "responsive"
             ],
             "labels": ["style"],
-            "title": true,
-            "body": true
+            "title": true
           },
           {
             "keywords": [
@@ -266,8 +259,7 @@
               "deploy"
             ],
             "labels": ["ci/cd"],
-            "title": true,
-            "body": true
+            "title": true
           },
           {
             "paths": [
